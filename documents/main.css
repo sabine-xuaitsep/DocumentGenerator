@@ -1,0 +1,72 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    font-weight: normal;
+}
+
+body {
+    background-color: #0e332f;
+    min-height: 100vh;
+    padding: 0 1rem;
+    font-family: Roboto, sans-serif;
+}
+
+header {
+    color: #fefefe;
+    text-align: center;
+}
+
+h1 {
+    padding-top: 1rem;
+    font-weight: 600;
+}
+
+nav .navSeparator {
+    color: #818181;
+    font-weight: 900;
+}
+
+nav a {
+    color: #818181;
+    display: inline-block;
+    padding: 1rem;
+    text-decoration: none;
+}
+
+nav a.active {
+    color: #fefefe;
+  }
+
+nav a:hover {
+    color: #fefefe;
+}
+
+main {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 1rem;
+}
+
+main .demoBox {
+    background-color: #fefefe;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 42.5vh;
+}
+
+main .demoBox .demoText {
+    font-size: 2rem;
+}
+
+@media screen and (min-width: 992px) {
+    main {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    main .demoBox {
+        height: 87vh;
+    }
+}
