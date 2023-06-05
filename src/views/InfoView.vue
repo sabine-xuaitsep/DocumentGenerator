@@ -14,6 +14,7 @@ main {
   justify-content: center;
   background-color: #fefefe;
   height: 87vh;
+  margin: 0 1rem;
 
   * {
     padding: .5rem 1rem;
