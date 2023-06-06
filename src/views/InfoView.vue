@@ -13,7 +13,7 @@ main {
   flex-direction: column;
   justify-content: center;
   background-color: #fefefe;
-  height: 87vh;
+  height: 70vh;
   margin: 0 1rem;
 
   * {

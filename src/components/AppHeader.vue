@@ -21,8 +21,8 @@ import { RouterLink } from 'vue-router';
 
 <style scoped lang="scss">
 header {
+  margin: 0 1rem;
   color: #fefefe;
-  padding: 0 1rem;
   text-align: center;
 
   h1 {

@@ -10,9 +10,9 @@ const props = defineProps({
     default: '',
   },
   editorHeight : {
-    type: String,
+    type: Number,
     required: false,
-    default: '500px',
+    default: 500,
   },
 });
 const emit = defineEmits([
@@ -25,7 +25,7 @@ let tuiEditor: Editor;
 onMounted(() => {
   tuiEditor = new Editor({
     el: editor.value,
-    height: props.editorHeight,
+    height: `${props.editorHeight}px`,
     hideModeSwitch: true,
     initialEditType: 'markdown',
     initialValue: props.tuiMdValue,

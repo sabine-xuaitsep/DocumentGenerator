@@ -2,26 +2,40 @@
 import { onMounted, ref } from 'vue';
 import ToastUiEditor from '../components/ToastUiEditor.vue';
 
+// DOM refs
 const mainContainer = ref();
 
+// const value
+const isLargeScreen = window.innerWidth >= 992;
+
+// reactive data
+const availableHeight = ref(0)
 const boxWidth = ref(0);
-const editorHeight = ref("");
+const boxHeight = ref(0);
 const tuiMdValue = ref("");
 const tuiHtmlValue = ref("Your text will appear here...");
 
 onMounted(() => {
+  calcAvailableHeight();
   setBoxHeight();
   setBoxWidth();
 });
 
+function calcAvailableHeight() {
+  const appHeader = document.getElementById("appHeader") as HTMLElement;
+  availableHeight.value = window.innerHeight - appHeader.offsetHeight;
+}
+
 function setBoxHeight() {
-  // TODO: manage exact height?
-  // it mysteriously takes the right height (available height) like this
-  editorHeight.value = "";
+  boxHeight.value = isLargeScreen
+    ? availableHeight.value
+    // 16px === 1rem (margin between boxes)
+    // => 16px / 2 = 8px
+    : availableHeight.value / 2 - 8;
 }
 
 function setBoxWidth() {
-  boxWidth.value = window.innerWidth >= 992
+  boxWidth.value = isLargeScreen
     ? mainContainer.value.offsetWidth / 2
     : mainContainer.value.offsetWidth;
 }
@@ -33,15 +47,15 @@ function setBoxWidth() {
       v-if="boxWidth > 0"
       id="tuiEditorBox"
       :style="{ width: `${boxWidth}px` }"
-      :editor-height="editorHeight"
+      :editor-height="boxHeight"
       :tui-md-value="tuiMdValue"
       @update:tui-md-value="tuiMdValue = $event"
       @update:tui-html-value="tuiHtmlValue = $event"
     />
     <div 
-      v-if="boxWidth > 0" 
-      class="viewerBox" 
-      :style="{ width: `${boxWidth}px` }"
+      v-if="boxWidth > 0"
+      class="viewerBox"
+      :style="{ width: `${boxWidth}px`, height: `${boxHeight}px` }"
       v-html="tuiHtmlValue"
     ></div>
   </main>
@@ -51,7 +65,7 @@ function setBoxWidth() {
 main {
   display: flex;
   flex-direction: column;
-  margin: 0 2rem 0 1rem;
+  margin: 0 1rem;
 
   #tuiEditorBox {
     background-color: #fefefe;
@@ -60,8 +74,9 @@ main {
   }
 
   .viewerBox {
+    display: block;
     background-color: #fefefe;
-    height: 42.5vh;
+    overflow: scroll;
     padding: 1rem;
   }
 }
@@ -69,14 +84,9 @@ main {
 @media screen and (min-width: 992px) {
   main {
     flex-direction: row;
-    margin: 0 1rem;
 
     #tuiEditorBox {
       margin: 0 1rem 0 0;
-    }
-
-    .viewerBox {
-      height: 87vh;
     }
   }
 }
