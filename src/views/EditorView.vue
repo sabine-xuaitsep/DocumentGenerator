@@ -1,8 +1,19 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref, type CSSProperties } from 'vue';
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+  type CSSProperties
+} from 'vue';
 import ToastUiEditor from '../components/ToastUiEditor.vue';
 
-// DOM refs
+// DOM el & refs
+const appHeader = document.getElementById("appHeader") as HTMLElement;
+
+const boxContainer = ref();
+const fullScreenCommand = ref();
 const mainContainer = ref();
 
 // reactive data
@@ -11,14 +22,29 @@ const boxStyle = reactive({
   width: '0px'
 }) as CSSProperties;
 
-const containerStyle = reactive({
-  flexDirection: 'column'
-}) as CSSProperties;
-
 const availableHeight = ref(0);
 const isLargeScreen = ref(window.innerWidth >= 992);
+const isFullScreen = ref(false);
 const tuiMdValue = ref("");
 const tuiHtmlValue = ref("Your text will appear here...");
+
+// computed data
+const boxContainerFlexDirection = computed(() => {
+  return isLargeScreen.value ? 'row' : 'column';
+});
+
+const fullScreenIcon = computed(() => {
+  return isFullScreen.value ? 'compress' : 'expand';
+});
+
+const fullScreenInfo = computed(() => {
+  return isFullScreen.value ? 'Exit full screen' : 'Toggle full screen';
+});
+
+const mainContainerPaddingTop = computed(() => {
+  return isFullScreen.value ? 16 : 0;
+});
+
 
 onMounted(() => {
   setBoxStyle();
@@ -30,49 +56,77 @@ onUnmounted(() => {
 });
 
 function calcAvailableHeight() {
-  const appHeader = document.getElementById("appHeader") as HTMLElement;
-  availableHeight.value = window.innerHeight - appHeader.offsetHeight;
+  availableHeight.value = isFullScreen.value
+  ? window.innerHeight - fullScreenCommand.value.offsetHeight - mainContainerPaddingTop.value
+  : window.innerHeight - appHeader.offsetHeight - fullScreenCommand.value.offsetHeight;
+}
+
+function closeFullscreen() {
+  document.exitFullscreen();
+  setBoxStyle();
+  isFullScreen.value = false;
 }
 
 function setBoxStyle() {
   calcAvailableHeight();
   isLargeScreen.value = window.innerWidth >= 992;
+
   if(isLargeScreen.value) {
     boxStyle.height = `${availableHeight.value}px`;
-    boxStyle.width = `${mainContainer.value.offsetWidth / 2}px`;
-    containerStyle.flexDirection = 'row';
+    boxStyle.width = `${boxContainer.value.offsetWidth / 2}px`;
   } else {
     // 16px === 1rem (margin between boxes)
     // => 16px / 2 = 8px
     boxStyle.height = `${availableHeight.value / 2 - 8}px`;
-    boxStyle.width = `${mainContainer.value.offsetWidth}px`;
-    containerStyle.flexDirection = 'column';
+    boxStyle.width = `${boxContainer.value.offsetWidth}px`;
   }
+}
+
+function openFullscreen() {
+  mainContainer.value.requestFullscreen();
+  setBoxStyle();
+  isFullScreen.value = true;
 }
 </script>
 
 <template>
   <main 
     ref="mainContainer"
-    :style="containerStyle"
+    :style="{ paddingTop: `${mainContainerPaddingTop}px` }"
   >
-    <ToastUiEditor
-      id="tuiEditorBox"
-      :style="boxStyle"
-      :tui-md-value="tuiMdValue"
-      @update:tui-md-value="tuiMdValue = $event"
-      @update:tui-html-value="tuiHtmlValue = $event"
-    />
     <div
-      class="viewerBox"
-      :style="boxStyle"
-      v-html="tuiHtmlValue"
-    ></div>
+      id="boxContainer"
+      ref="boxContainer"
+      :style="{ flexDirection: boxContainerFlexDirection }"
+    >
+      <ToastUiEditor
+        id="tuiEditorBox"
+        :style="boxStyle"
+        :tui-md-value="tuiMdValue"
+        @update:tui-md-value="tuiMdValue = $event"
+        @update:tui-html-value="tuiHtmlValue = $event"
+      />
+      <div
+        id="viewerBox"
+        :style="boxStyle"
+        v-html="tuiHtmlValue"
+      ></div>
+    </div>
+    <div id="fullScreenCommand" ref="fullScreenCommand">
+      <a
+        :href="`#${fullScreenInfo.toLowerCase().replace(' ', '-')}`"
+        :title="fullScreenInfo"
+        @click.prevent="isFullScreen ? closeFullscreen() : openFullscreen()"
+      >
+        {{ fullScreenInfo }}
+        <font-awesome-icon :icon="['fas', fullScreenIcon]" />
+      </a>
+    </div>
   </main>
 </template>
 
 <style scoped lang="scss">
-main {
+#boxContainer {
   display: flex;
   margin: 0 1rem;
 
@@ -82,8 +136,7 @@ main {
     margin: 0 0 1rem 0;
   }
 
-  .viewerBox {
-    display: block;
+  #viewerBox {
     background-color: #fefefe;
     overflow-wrap: break-word;
     overflow-y: scroll;
@@ -91,8 +144,23 @@ main {
   }
 }
 
+#fullScreenCommand {
+  text-align: right;
+
+  a {
+    display: inline-block;
+    padding: 1rem 1.3rem;
+    color: #fefefe;
+    text-decoration: none;
+
+    svg {
+      padding-left: .3rem;
+    }
+  }
+}
+
 @media screen and (min-width: 992px) {
-  main #tuiEditorBox {
+  #boxContainer #tuiEditorBox {
     margin: 0 1rem 0 0;
   }
 }
