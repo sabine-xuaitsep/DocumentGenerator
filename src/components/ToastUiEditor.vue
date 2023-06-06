@@ -9,23 +9,23 @@ const props = defineProps({
     required: false,
     default: '',
   },
-  editorHeight : {
-    type: Number,
-    required: false,
-    default: 500,
-  },
 });
 const emit = defineEmits([
   'update:tuiMdValue',
   'update:tuiHtmlValue'
 ]);
+
+// DOM refs
 const editor = ref();
 
-let tuiEditor: Editor;
 onMounted(() => {
-  tuiEditor = new Editor({
+  setTuiEditor();
+});
+
+function setTuiEditor() {
+  const tuiEditor = new Editor({
     el: editor.value,
-    height: `${props.editorHeight}px`,
+    height: undefined,
     hideModeSwitch: true,
     initialEditType: 'markdown',
     initialValue: props.tuiMdValue,
@@ -39,7 +39,7 @@ onMounted(() => {
       },
     },
   });
-});
+}
 </script>
 
 <template>
