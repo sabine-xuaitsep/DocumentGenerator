@@ -7,7 +7,10 @@ import {
   ref,
   type CSSProperties
 } from 'vue';
-import ToastUiEditor from '../components/ToastUiEditor.vue';
+import ToastUiEditor from '@/components/ToastUiEditor.vue';
+import TuiCustomBtn from '@/components/TuiCustomBtn.vue';
+import myCustomBtns from '@/components/tuiCustomBtns';
+import type Editor from 'node_modules/@toast-ui/editor/types';
 
 // DOM el & refs
 const appHeader = document.getElementById("appHeader") as HTMLElement;
@@ -15,6 +18,9 @@ const appHeader = document.getElementById("appHeader") as HTMLElement;
 const boxContainer = ref();
 const fullScreenCommand = ref();
 const mainContainer = ref();
+
+// ToastUiEditor instance
+let tuiEditor: Editor;
 
 // reactive data
 const boxStyle = reactive({
@@ -25,7 +31,7 @@ const boxStyle = reactive({
 const availableHeight = ref(0);
 const isLargeScreen = ref(window.innerWidth >= 992);
 const isFullScreen = ref(false);
-const tuiMdValue = ref("");
+const tuiMdValue = ref("Demo text");
 const tuiHtmlValue = ref("Your text will appear here...");
 
 // computed data
@@ -48,11 +54,11 @@ const mainContainerPaddingTop = computed(() => {
 
 onMounted(() => {
   setBoxStyle();
-  window.addEventListener("resize", setBoxStyle);
+  window.addEventListener('resize', setBoxStyle);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("resize", setBoxStyle);
+  window.removeEventListener('resize', setBoxStyle);
 });
 
 function calcAvailableHeight() {
@@ -103,8 +109,15 @@ function openFullscreen() {
         id="tuiEditorBox"
         :style="boxStyle"
         :tui-md-value="tuiMdValue"
-        @update:tui-md-value="tuiMdValue = $event"
-        @update:tui-html-value="tuiHtmlValue = $event"
+        @update-tui-md-value="tuiMdValue = $event"
+        @update-tui-html-value="tuiHtmlValue = $event"
+        @tui-editor="tuiEditor = $event"
+      />
+      <TuiCustomBtn
+        v-if="tuiEditor"
+        v-for="(btn, i) in myCustomBtns" :key="i"
+        :customBtn="btn"
+        :tuiEditor="tuiEditor"
       />
       <div
         id="viewerBox"

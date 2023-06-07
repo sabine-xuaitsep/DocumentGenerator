@@ -11,10 +11,44 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
-import { faCircleInfo, faCompress, faExpand, faPencil } from '@fortawesome/free-solid-svg-icons'
+import {
+    faAlignCenter,
+    faCircleInfo,
+    faCode,
+    faCompress,
+    faExpand,
+    faHighlighter,
+    faIndent,
+    faPencil,
+    faPrint,
+    faSuperscript,
+    faTextHeight,
+    faTurnDown,
+    faUnderline
+} from '@fortawesome/free-solid-svg-icons'
+import {
+    faSquare,
+    faFileCode
+} from '@fortawesome/free-regular-svg-icons'
 
 /* add icons to the library */
-library.add(faCircleInfo, faCompress, faExpand, faPencil)
+library.add(
+    faAlignCenter,
+    faCircleInfo,
+    faCode,
+    faCompress,
+    faExpand,
+    faFileCode,
+    faHighlighter,
+    faIndent,
+    faPencil,
+    faPrint,
+    faSquare,
+    faSuperscript,
+    faTextHeight,
+    faTurnDown,
+    faUnderline
+)
 
 const app = createApp(App)
 
