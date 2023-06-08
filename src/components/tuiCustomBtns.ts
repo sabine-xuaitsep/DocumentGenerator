@@ -8,19 +8,22 @@ export interface CustomBtns {
     faIcon: string[]
     inline?: boolean
     name: string
+    state: string
     tooltip: string
 }
 
-// to organize items: refer to component ToastUiEditor => toolbarItems
+// to organize items: refer to ToastUiEditor component => toolbarItems
 const myCustomBtns: CustomBtns[] = [
     // groupIndex === array to integrate btn
-    // !! itemIndex: btn integrated with splice() => pay attention to declaration order
+    // !! itemIndex: btn integrated with splice() 
+    // => pay attention to declaration order
     {
       index: { groupIndex: 0, itemIndex: 0 },
       action: 'open:fontSize',
       bindedPopupEl: (null as unknown) as HTMLElement,
       faIcon: ['fas', 'text-height'],
       name: 'fontSize',
+      state: 'fontSize',
       tooltip: 'Font size'
     },
     {
@@ -28,30 +31,31 @@ const myCustomBtns: CustomBtns[] = [
       action: 'tag:u',
       faIcon: ['fas', 'underline'],
       name: 'underline',
+      state: 'underline',
       tooltip: 'Underline'
     },
     {
       index: { groupIndex: 0, itemIndex: 5 },
       action: 'tag:sup',
-      // OR action: 'md:^'
       faIcon: ['fas', 'superscript'],
       name: 'superscript',
+      state: 'superscript',
       tooltip: 'Superscript'
     },
     {
       index: { groupIndex: 0, itemIndex: 6 },
       action: 'tag:mark',
-      // OR action: 'md:=='
       faIcon: ['fas', 'highlighter'],
       name: 'highlight',
+      state: 'highlight',
       tooltip: 'Highlight'
     },
     {
       index: { groupIndex: 1, itemIndex: 1 },
-      action: 'class:ctr',
+      action: 'custom:divCtr',
       faIcon: ['fas', 'align-center'],
-      inline: false,
       name: 'alignCenter',
+      state: 'alignCenter',
       tooltip: 'Center text'
     },
     {
@@ -59,7 +63,8 @@ const myCustomBtns: CustomBtns[] = [
       action: 'open:indent',
       bindedPopupEl: (null as unknown) as HTMLElement,
       faIcon: ['fas', 'indent'],
-      name: 'indentText',
+      name: 'indent',
+      state: 'indent',
       tooltip: 'Indent text'
     },
     {
@@ -67,7 +72,8 @@ const myCustomBtns: CustomBtns[] = [
       action: 'open:bordered',
       bindedPopupEl: (null as unknown) as HTMLElement,
       faIcon: ['far', 'square'],
-      name: 'addBorder',
+      name: 'bordered',
+      state: 'bordered',
       tooltip: 'Add border'
     },
     {
@@ -75,14 +81,17 @@ const myCustomBtns: CustomBtns[] = [
       action: 'open:htmlTags',
       bindedPopupEl: (null as unknown) as HTMLElement,
       faIcon: ['fas', 'code'],
-      name: 'other',
+      name: 'htmlTags',
+      state: 'htmlTags',
       tooltip: 'Other'
     },
+    // !! <br> create bugs on marks & getHTML()
     {
       index: { groupIndex: 1, itemIndex: 5 },
       action: 'orphTag:br',
       faIcon: ['fas', 'turn-down'],
       name: 'lineBreak',
+      state: 'lineBreak',
       tooltip: 'Line break'
     },
     // declare in push order for non-indexed
@@ -92,24 +101,10 @@ const myCustomBtns: CustomBtns[] = [
       action: 'print',
       faIcon: ['fas', 'print'],
       name: 'print',
+      state: 'print',
       tooltip: 'Print'
     },
-    
     // TODO???
-    // { action: 'mdSpecial:[^${footnote}]', faIcon: '???', tooltip: 'Footnote' },
     // { action: 'erase', faIcon: 'fas fa-eraser', tooltip: 'Erase all' },
-    
-    // NOT implemented yet || related to old project
-    // {
-    //   id: (null as unknown) as number,
-    //   action: 'json',
-    //   faIcon: ['far', 'file-code'],
-    //   index: { groupIndex: 3, itemIndex: 0 },
-    //   tuiBtn: {
-    //     name: 'openJsonFile',
-    //     el: (null as unknown) as HTMLElement,
-    //     tooltip: 'Open json file'
-    //   }
-    // },
 ];
 export default myCustomBtns;

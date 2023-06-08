@@ -55,6 +55,43 @@ function setTuiEditor() {
         emit('update-tui-md-value', tuiEditor.getMarkdown());
         emit('update-tui-html-value', tuiEditor.getHTML());
       },
+    },
+    customHTMLRenderer: {
+      htmlInline: {
+        mark(node, { entering }) {
+          return entering
+            ? { type: 'openTag', tagName: 'mark', attributes: node.attrs }
+            : { type: 'closeTag', tagName: 'mark' };
+        },
+        small(node, { entering }) {
+          return entering
+            ? { type: 'openTag', tagName: 'small', attributes: node.attrs }
+            : { type: 'closeTag', tagName: 'small' };
+        },
+        span(node, { entering }) {
+          return entering
+            ? { type: 'openTag', tagName: 'span', attributes: node.attrs }
+            : { type: 'closeTag', tagName: 'span' };
+        },
+        sup(node, { entering }) {
+          return entering
+            ? { type: 'openTag', tagName: 'sup', attributes: node.attrs }
+            : { type: 'closeTag', tagName: 'sup' };
+        },
+        u(node, { entering }) {
+          return entering
+            ? { type: 'openTag', tagName: 'u', attributes: node.attrs }
+            : { type: 'closeTag', tagName: 'u' };
+        },
+      },
+      // customBlock: declare with $$div & close with $$
+      divCtr(node) {
+        return [
+          { type: 'openTag', tagName: 'div', outerNewLine: true },
+          { type: 'html', content: node.literal ?? '' },
+          { type: 'closeTag', tagName: 'div', outerNewLine: true }
+        ];
+      },
     }
   });
   emit('tui-editor', tuiEditor);

@@ -31,7 +31,9 @@ const boxStyle = reactive({
 const availableHeight = ref(0);
 const isLargeScreen = ref(window.innerWidth >= 992);
 const isFullScreen = ref(false);
-const tuiMdValue = ref("Demo text");
+// TODO: if value doesn't finish with '\n\n' => add '\n'
+// => to prevent erratic bug
+const tuiMdValue = ref("# Demo\n\n<u>u</u><sup>sup</sup><mark>mark</mark>\n\n$$divCtr \ncustomDiv \n$$\n\n");
 const tuiHtmlValue = ref("Your text will appear here...");
 
 // computed data
