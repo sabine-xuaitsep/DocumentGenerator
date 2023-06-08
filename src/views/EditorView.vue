@@ -9,7 +9,9 @@ import {
 } from 'vue';
 import ToastUiEditor from '@/components/ToastUiEditor.vue';
 import TuiCustomBtn from '@/components/TuiCustomBtn.vue';
+import TuiCustomPopup from '@/components/TuiCustomPopup.vue';
 import myCustomBtns from '@/components/tuiCustomBtns';
+import myCustomPopups from '@/components/tuiCustomPopups';
 import type Editor from 'node_modules/@toast-ui/editor/types';
 
 // DOM el & refs
@@ -119,6 +121,13 @@ function openFullscreen() {
         v-if="tuiEditor"
         v-for="(btn, i) in myCustomBtns" :key="i"
         :customBtn="btn"
+        :tuiEditor="tuiEditor"
+      />
+      <TuiCustomPopup
+        v-if="tuiEditor"
+        v-for="(popup, i) in myCustomPopups" :key="i"
+        :customPopup="popup"
+        :popupName="i"
         :tuiEditor="tuiEditor"
       />
       <div
