@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import TuiCustomPopupBtn from './TuiCustomPopupBtn.vue';
+import handleBtnAction from '@/services/handleBtnAction';
 import type Editor from 'node_modules/@toast-ui/editor/types';
-import type { CustomBtns } from './tuiCustomBtns';
+import type { CustomBtn } from '@/components/tuiCustomBtns';
 
 const props = defineProps<{
-  customBtn: CustomBtns,
+  customBtn: CustomBtn,
   tuiEditor: Editor
 }>();
 
@@ -44,74 +45,14 @@ onMounted(() => {
 });
 
 function handleEvent() {
-
-  if (props.customBtn.action === 'popup' && !popupReady.value) {
-    popupReady.value = true;
-  }
-
   if (props.customBtn.action.match(/[a-z]+:/i)) {
-
-    const btnFn = props.customBtn.action.split(':') as string[];
-    
-    if (btnFn[0] === 'custom') {
-      const highlight = props.tuiEditor.getSelectedText();
-      const position = props.tuiEditor.getSelection();
-      const start = position[0] as number[];
-      const end = position[1] as number[];
-
-      // check for critical causing syntax highlighting bugs
-      // if selection starts at first char of line
-      // && if no text after selection
-      props.tuiEditor.setSelection(
-        [ end[0], end[1] ],
-        [ end[0], end[1] + 2 ]
-      );
-      const noTextAfterSelection = props.tuiEditor.getSelectedText() === "";
-      const criticalCondition = start[1] === 1 && noTextAfterSelection;
-
-      // reset selection to initial position
-      props.tuiEditor.setSelection(
-        [ start[0], start[1] ],
-        [ end[0], end[1] ]
-      );
-
-      // apply a subterfuge if criticalCondition
-      const startCharPos = criticalCondition
-        ? start[1] + 1
-        : start[1];
-
-      // insert customBlock
-      // [managed in ToastUiEditor component => customHTMLRenderer]
-      props.tuiEditor.replaceSelection(
-        `\n$$${btnFn[1]}\n${highlight}\n$$\n`,
-        [ start[0], startCharPos ],
-        [ end[0], end[1] ]
-      );
-
-      // apply patch to hide subterfuge
-      if (criticalCondition && highlight !== "") {
-        props.tuiEditor.deleteSelection(
-          [ start[0], start[1] ],
-          [ start[0], start[1] + 1 ]
-        );
-      }
-    }
-    else if (
-        btnFn[0] === 'orphTag'
-        || btnFn[0] === 'span'
-        || btnFn[0] === 'tag'
-      ) {
-      const highlight = props.tuiEditor.getSelectedText();
-      const mdText = {
-        orphTag: `<${btnFn[1]}>`,
-        span: `<span class="${btnFn[1]}">${highlight}</span>`,
-        tag: `<${btnFn[1]}>${highlight}</${btnFn[1]}>`
-      };
-      props.tuiEditor.insertText(mdText[btnFn[0]]);
-    }
-    else {
-      return;
-    }
+    handleBtnAction(props.customBtn, props.tuiEditor);
+  }
+  else if (
+      props.customBtn.action === 'popup' 
+      && !popupReady.value
+    ) {
+    popupReady.value = true;
   }
   // else if (props.customBtn.action === 'erase') {
   //   props.tuiEditor.reset();
@@ -121,6 +62,13 @@ function handleEvent() {
   }
   return false;
 }
+
+// props.tuiEditor.addCommand('markdown', 'test', commandTest);
+// function commandTest(e) {
+//   console.log(e);
+//   props.tuiEditor.insertText("coucou");
+// }
+
 </script>
 
 <template>
@@ -132,6 +80,7 @@ function handleEvent() {
       @click="handleEvent"
     >
       <font-awesome-icon :icon="customBtn.faIcon" />
+      <!-- <font-awesome-icon :icon="customBtn.faIcon" rotation=90 /> -->
     </button>
     <div
       v-if="isPopup"

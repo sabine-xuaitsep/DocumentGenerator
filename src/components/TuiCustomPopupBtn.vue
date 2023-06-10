@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import handleBtnAction from '@/services/handleBtnAction';
 import type Editor from 'node_modules/@toast-ui/editor/types';
-import type { CustomPopupBtn } from './tuiCustomBtns';
+import type { CustomPopupBtn } from '@/components/tuiCustomBtns';
 
 const props = defineProps<{
   customPopupBtn: CustomPopupBtn,
@@ -8,7 +9,13 @@ const props = defineProps<{
 }>();
 
 function handleEvent() {
-  props.tuiEditor.eventEmitter.emit('closePopup');
+  if (props.customPopupBtn.action.match(/[a-z]+:/i)) {
+    handleBtnAction(props.customPopupBtn, props.tuiEditor);
+    props.tuiEditor.eventEmitter.emit('closePopup');
+  } else {
+    return;
+  }
+  return false;
 }
 </script>
 

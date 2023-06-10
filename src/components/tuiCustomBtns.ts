@@ -1,4 +1,4 @@
-export interface CustomBtns {
+export interface CustomBtn {
   index?: {
     groupIndex: number
     itemIndex: number
@@ -17,7 +17,7 @@ export interface CustomPopupBtn {
 
 
 // to organize items: refer to ToastUiEditor component => toolbarItems
-const myCustomBtns: CustomBtns[] = [
+const myCustomBtns: CustomBtn[] = [
   // groupIndex === array to integrate btn
   // !! itemIndex: btn integrated with splice() 
   // => pay attention to declaration order
@@ -28,9 +28,9 @@ const myCustomBtns: CustomBtns[] = [
     name: 'fontSize',
     tooltip: 'Font size',
     popupBtns: [
-      { name: 'large', action: 'custom:spanfntSz3' },
-      { name: 'medium', action: 'custom:spanfntSz2' },
-      { name: 'small', action: 'custom:spanfntSz1' },
+      { name: 'large', action: 'span:spanfntSz3' },
+      { name: 'medium', action: 'span:spanfntSz2' },
+      { name: 'small', action: 'span:spanfntSz1' },
       { name: 'tiny', action: 'tag:small' }
     ]
   },

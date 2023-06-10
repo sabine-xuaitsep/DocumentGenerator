@@ -65,7 +65,7 @@ function setTuiEditor() {
         sup: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'sup'),
         u: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'u')
       },
-      // customBlock: declare with $$div & close with $$
+      // customBlock: declared with $$customBlockName & closed with $$
       divCtr(node) {
         return [
           { type: 'openTag', tagName: 'div', outerNewLine: true },
