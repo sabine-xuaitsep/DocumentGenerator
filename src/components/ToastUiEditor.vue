@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import Editor from '@/../node_modules/@toast-ui/editor';
+import Editor, { type HTMLMdNode } from '@/../node_modules/@toast-ui/editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
+import type { HTMLToken } from 'node_modules/@toast-ui/editor/types/toastmark';
 
 const props = defineProps({
   tuiMdValue: {
@@ -58,31 +59,11 @@ function setTuiEditor() {
     },
     customHTMLRenderer: {
       htmlInline: {
-        mark(node, { entering }) {
-          return entering
-            ? { type: 'openTag', tagName: 'mark', attributes: node.attrs }
-            : { type: 'closeTag', tagName: 'mark' };
-        },
-        small(node, { entering }) {
-          return entering
-            ? { type: 'openTag', tagName: 'small', attributes: node.attrs }
-            : { type: 'closeTag', tagName: 'small' };
-        },
-        span(node, { entering }) {
-          return entering
-            ? { type: 'openTag', tagName: 'span', attributes: node.attrs }
-            : { type: 'closeTag', tagName: 'span' };
-        },
-        sup(node, { entering }) {
-          return entering
-            ? { type: 'openTag', tagName: 'sup', attributes: node.attrs }
-            : { type: 'closeTag', tagName: 'sup' };
-        },
-        u(node, { entering }) {
-          return entering
-            ? { type: 'openTag', tagName: 'u', attributes: node.attrs }
-            : { type: 'closeTag', tagName: 'u' };
-        },
+        mark: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'mark'),
+        small: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'small'),
+        span: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'span'),
+        sup: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'sup'),
+        u: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'u')
       },
       // customBlock: declare with $$div & close with $$
       divCtr(node) {
@@ -95,6 +76,14 @@ function setTuiEditor() {
     }
   });
   emit('tui-editor', tuiEditor);
+}
+
+function handleHtmlInlineRenderer(
+    node: HTMLMdNode, entering: boolean, tag: string
+  ): HTMLToken {
+  return entering
+    ? { type: 'openTag', tagName: tag, attributes: node.attrs }
+    : { type: 'closeTag', tagName: tag };
 }
 </script>
 
