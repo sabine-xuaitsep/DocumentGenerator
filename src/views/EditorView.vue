@@ -9,9 +9,7 @@ import {
 } from 'vue';
 import ToastUiEditor from '@/components/ToastUiEditor.vue';
 import TuiCustomBtn from '@/components/TuiCustomBtn.vue';
-import TuiCustomPopup from '@/components/TuiCustomPopup.vue';
 import myCustomBtns from '@/components/tuiCustomBtns';
-import myCustomPopups from '@/components/tuiCustomPopups';
 import type Editor from 'node_modules/@toast-ui/editor/types';
 
 // DOM el & refs
@@ -32,8 +30,6 @@ const boxStyle = reactive({
 const availableHeight = ref(0);
 const isLargeScreen = ref(window.innerWidth >= 992);
 const isFullScreen = ref(false);
-const popupsVisibility = ref({});
-const tuiCustomPopupKey = ref(0);
 // TODO: if value doesn't finish with '\n\n' => add '\n'
 // => to prevent erratic bug
 const tuiMdValue = ref("# Demo\n\n<u>u</u><sup>sup</sup><mark>mark</mark>\n\n$$divCtr \ncustomDiv \n$$\n\n");
@@ -56,11 +52,6 @@ const mainContainerPaddingTop = computed(() =>
   isFullScreen.value ? 16 : 0
 );
 
-// create popupsVisibility object to manage popups visibility
-myCustomPopups.forEach(popup => {
-  Object.assign(popupsVisibility.value, { [popup.name]: 'none' });
-});
-
 onMounted(() => {
   setBoxStyle();
   window.addEventListener('resize', setBoxStyle);
@@ -69,12 +60,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', setBoxStyle);
 });
-
-function bindPopupVisibility (e: string[]) {
-  Object.assign(popupsVisibility.value, { [e[0]]: e[1] });
-  // force update 
-  tuiCustomPopupKey.value += 1;
-}
 
 function calcAvailableHeight() {
   availableHeight.value = isFullScreen.value
@@ -132,16 +117,6 @@ function openFullscreen() {
         v-if="tuiEditor"
         v-for="(btn, i) in myCustomBtns" :key="i"
         :customBtn="btn"
-        :popupsVisibility="popupsVisibility"
-        :tuiEditor="tuiEditor"
-        @display-popup="bindPopupVisibility($event)"
-      />
-      <TuiCustomPopup
-        v-if="tuiEditor"
-        v-for="(popup, i) in myCustomPopups" :key="`${tuiCustomPopupKey}-${i}`"
-        :customPopupBtns="popup.btns"
-        :popupsVisibility="popupsVisibility"
-        :popupName="popup.name"
         :tuiEditor="tuiEditor"
       />
       <div

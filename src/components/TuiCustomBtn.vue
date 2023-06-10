@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import TuiCustomPopupBtn from './TuiCustomPopupBtn.vue';
 import type Editor from 'node_modules/@toast-ui/editor/types';
 import type { CustomBtns } from './tuiCustomBtns';
 
 const props = defineProps<{
   customBtn: CustomBtns,
-  popupsVisibility: Object,
   tuiEditor: Editor
 }>();
 
-const emit = defineEmits([
-  'display-popup'
-]);
-
 // DOM refs
 const customBtnEl = ref();
+const customPopupEl = ref();
 
+
+const isPopup = ref(props.customBtn.popupBtns);
+const popupReady = ref(false);
 
 onMounted(() => {
   const btn = {
@@ -23,6 +23,14 @@ onMounted(() => {
     el: customBtnEl.value,
     tooltip: props.customBtn.tooltip
   };
+
+  if (isPopup.value) {
+    Object.assign(btn, { popup: {
+      body: customPopupEl.value,
+      className: `myTuiCustomPopup ${props.customBtn.name}`,
+      style: { width: 'auto' }
+    }});
+  }
 
   if (props.customBtn.index) {
     props.tuiEditor.insertToolbarItem(
@@ -36,13 +44,16 @@ onMounted(() => {
 });
 
 function handleEvent() {
+
+  if (props.customBtn.action === 'popup' && !popupReady.value) {
+    popupReady.value = true;
+  }
+
   if (props.customBtn.action.match(/[a-z]+:/i)) {
 
     const btnFn = props.customBtn.action.split(':') as string[];
     
     if (btnFn[0] === 'custom') {
-      handlePopupsVisibility();
-
       const highlight = props.tuiEditor.getSelectedText();
       const position = props.tuiEditor.getSelection();
       const start = position[0] as number[];
@@ -52,16 +63,16 @@ function handleEvent() {
       // if selection starts at first char of line
       // && if no text after selection
       props.tuiEditor.setSelection(
-        [end[0] , end[1]],
-        [end[0] , end[1] + 2]
+        [ end[0], end[1] ],
+        [ end[0], end[1] + 2 ]
       );
       const noTextAfterSelection = props.tuiEditor.getSelectedText() === "";
       const criticalCondition = start[1] === 1 && noTextAfterSelection;
 
       // reset selection to initial position
       props.tuiEditor.setSelection(
-        [start[0] , start[1]],
-        [end[0] , end[1]]
+        [ start[0], start[1] ],
+        [ end[0], end[1] ]
       );
 
       // apply a subterfuge if criticalCondition
@@ -73,22 +84,23 @@ function handleEvent() {
       // [managed in ToastUiEditor component => customHTMLRenderer]
       props.tuiEditor.replaceSelection(
         `\n$$${btnFn[1]}\n${highlight}\n$$\n`,
-        [start[0] , startCharPos],
-        [end[0] , end[1]]
+        [ start[0], startCharPos ],
+        [ end[0], end[1] ]
       );
 
       // apply patch to hide subterfuge
       if (criticalCondition && highlight !== "") {
         props.tuiEditor.deleteSelection(
-          [start[0] , start[1]],
-          [start[0] , start[1] + 1]
+          [ start[0], start[1] ],
+          [ start[0], start[1] + 1 ]
         );
       }
-    } else if (btnFn[0] === 'open') {
-      handlePopupsVisibility(btnFn[1]);
-    } else if (btnFn[0] === 'orphTag' || btnFn[0] === 'span' || btnFn[0] === 'tag' ) {
-      handlePopupsVisibility();
-
+    }
+    else if (
+        btnFn[0] === 'orphTag'
+        || btnFn[0] === 'span'
+        || btnFn[0] === 'tag'
+      ) {
       const highlight = props.tuiEditor.getSelectedText();
       const mdText = {
         orphTag: `<${btnFn[1]}>`,
@@ -96,8 +108,8 @@ function handleEvent() {
         tag: `<${btnFn[1]}>${highlight}</${btnFn[1]}>`
       };
       props.tuiEditor.insertText(mdText[btnFn[0]]);
-
-    } else {
+    }
+    else {
       return;
     }
   }
@@ -109,49 +121,44 @@ function handleEvent() {
   }
   return false;
 }
-
-function handlePopupsVisibility(popupKey: string | null = null) {
-  for (const [key, value] of Object.entries(props.popupsVisibility)) {
-    if (key === popupKey) {
-      value === 'none'
-        ? emit('display-popup', [key, 'block'])
-        : emit('display-popup', [key, 'none']);
-    } else if (value === 'block') {
-      emit('display-popup', [key, 'none'])
-    }
-  }
-}
 </script>
 
 <template>
-  <span
-    ref="customBtnEl"
-    class="myTuiCustomBtn"
-    :class="customBtn.name"
-    @click="handleEvent"
-  >
-    <font-awesome-icon :icon="customBtn.faIcon" />
-  </span>
+  <div>
+    <button
+      ref="customBtnEl"
+      class="myTuiCustomBtn"
+      :class="customBtn.name"
+      @click="handleEvent"
+    >
+      <font-awesome-icon :icon="customBtn.faIcon" />
+    </button>
+    <div
+      v-if="isPopup"
+      ref="customPopupEl"
+    >
+      <TuiCustomPopupBtn 
+        v-if="popupReady"
+        v-for="(btn, i) in customBtn.popupBtns" :key="i"
+        :customPopupBtn="btn"
+        :tuiEditor="tuiEditor"
+      />
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
 .myTuiCustomBtn {
+  background: none;
   display: block;
-  height: 32px;
-  width: 32px;
-  cursor: pointer;
-  border: 1px solid #f7f9fc;
-  border-radius: 3px;
+  margin: 0;
   color: #555;
-  text-align: center;
 
-  &:hover {
-    background-color: #fefefe;
-    border-color: #dadde6;
-  }
-
-  &.fontSize {
-    line-height: 28px;
+  svg {
+    position: relative;
+    top: 1px;
+    height: 18px;
+    width: 18px;
   }
 
   &.lineBreak svg {
