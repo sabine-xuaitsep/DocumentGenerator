@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, onUpdated, reactive, ref } from 'vue';
 import TuiCustomPopupBtn from '@/components/TuiCustomPopupBtn.vue';
 import type Editor from 'node_modules/@toast-ui/editor/types';
 import type { CustomPopupBtn } from './tuiCustomPopups';
 
 const props = defineProps<{
-  customPopup: CustomPopupBtn[],
+  customPopupBtns: CustomPopupBtn[],
   popupName: String,
+  popupsVisibility: Object,
   tuiEditor: Editor
 }>();
 
@@ -14,6 +15,7 @@ const props = defineProps<{
 const bindedBtn = document.querySelector(`.myTuiCustomBtn.${props.popupName}`) as HTMLElement;
 const toolbarContainer = document.querySelector('.toastui-editor-defaultUI-toolbar') as HTMLElement;
 const customPopupEl = ref();
+
 
 const popupStyle = reactive ({
   display: 'block',
@@ -23,13 +25,20 @@ const popupStyle = reactive ({
 
 onMounted(() => {
   const toolbarHeight = Number(window.getComputedStyle(toolbarContainer).height.slice(0, -2));
-  const initialpopupPosTop = Number(window.getComputedStyle(customPopupEl.value).top.slice(0, -2));
-  popupStyle.top = `${ toolbarHeight + initialpopupPosTop - 3 }px`;
+  const initialPopupPosTop = Number(window.getComputedStyle(customPopupEl.value).top.slice(0, -2));
+  popupStyle.top = `${ toolbarHeight + initialPopupPosTop - 3 }px`;
+  popupStyle.left = `${bindedBtn.getBoundingClientRect().x}px`;
+  popupStyle.display = 'none';
+});
 
-  if (popupStyle.left === '') {
-    popupStyle.left = `${bindedBtn.getBoundingClientRect().x}px`;
+onUpdated(() => {
+  const popupValue = Object.entries(props.popupsVisibility).find(
+    popupVisibility => popupVisibility[0] === props.popupName
+  );
+  if (popupValue) {
+    popupStyle.display = popupValue[1];
   }
-})
+});
 
 </script>
 
@@ -41,7 +50,7 @@ onMounted(() => {
   >
     <div class="toastui-editor-popup-body">
       <TuiCustomPopupBtn
-        v-for="(btn, i) in customPopup" :key="i"
+        v-for="(btn, i) in customPopupBtns" :key="i"
         :customPopupBtn="btn"
         :tuiEditor="tuiEditor"
       />

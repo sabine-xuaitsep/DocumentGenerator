@@ -5,8 +5,13 @@ import type { CustomBtns } from './tuiCustomBtns';
 
 const props = defineProps<{
   customBtn: CustomBtns,
+  popupsVisibility: Object,
   tuiEditor: Editor
-}>()
+}>();
+
+const emit = defineEmits([
+  'display-popup'
+]);
 
 // DOM refs
 const customBtnEl = ref();
@@ -32,22 +37,12 @@ onMounted(() => {
 
 function handleEvent() {
   if (props.customBtn.action.match(/[a-z]+:/i)) {
+
     const btnFn = props.customBtn.action.split(':') as string[];
-    if (btnFn[0] === 'tag' || btnFn[0] === 'span') {
-      // hidePopups();
-      const highlight = props.tuiEditor.getSelectedText();
-      const mdText = { 
-        tag: `<${btnFn[1]}>${highlight}</${btnFn[1]}>`,
-        span: `<span class="${btnFn[1]}">${highlight}</span>`
-      };
-      props.tuiEditor.replaceSelection(mdText[btnFn[0]]);
-    }
-    else if (btnFn[0] === 'orphTag') {
-      // hidePopups();
-      props.tuiEditor.insertText(`<${btnFn[1]}>`);
-    }
-    else if (btnFn[0] === 'custom') {
-      // hidePopups();
+    
+    if (btnFn[0] === 'custom') {
+      handlePopupsVisibility();
+
       const highlight = props.tuiEditor.getSelectedText();
       const position = props.tuiEditor.getSelection();
       const start = position[0] as number[];
@@ -89,11 +84,20 @@ function handleEvent() {
           [start[0] , start[1] + 1]
         );
       }
-    }
-    else if (btnFn[0] === 'open') {
-      // TODO: manage popups
-    }
-    else {
+    } else if (btnFn[0] === 'open') {
+      handlePopupsVisibility(btnFn[1]);
+    } else if (btnFn[0] === 'orphTag' || btnFn[0] === 'span' || btnFn[0] === 'tag' ) {
+      handlePopupsVisibility();
+
+      const highlight = props.tuiEditor.getSelectedText();
+      const mdText = {
+        orphTag: `<${btnFn[1]}>`,
+        span: `<span class="${btnFn[1]}">${highlight}</span>`,
+        tag: `<${btnFn[1]}>${highlight}</${btnFn[1]}>`
+      };
+      props.tuiEditor.insertText(mdText[btnFn[0]]);
+
+    } else {
       return;
     }
   }
@@ -104,6 +108,18 @@ function handleEvent() {
     return;
   }
   return false;
+}
+
+function handlePopupsVisibility(popupKey: string | null = null) {
+  for (const [key, value] of Object.entries(props.popupsVisibility)) {
+    if (key === popupKey) {
+      value === 'none'
+        ? emit('display-popup', [key, 'block'])
+        : emit('display-popup', [key, 'none']);
+    } else if (value === 'block') {
+      emit('display-popup', [key, 'none'])
+    }
+  }
 }
 </script>
 

@@ -5,7 +5,7 @@ import type { CustomPopupBtn } from './tuiCustomPopups';
 const props = defineProps<{
   customPopupBtn: CustomPopupBtn,
   tuiEditor: Editor
-}>()
+}>();
 </script>
 
 <template>
