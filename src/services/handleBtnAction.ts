@@ -1,6 +1,30 @@
 import type Editor from 'node_modules/@toast-ui/editor/types';
 import type { CustomBtn, CustomPopupBtn } from '@/components/tuiCustomBtns';
 
+function isCriticalCondition (
+    editor: Editor, endPos: number[], startPos: number[]
+  ): boolean {
+  // grow selection to 1 char
+  editor.setSelection(
+    [ endPos[0], endPos[1] ],
+    [ endPos[0], endPos[1] + 1 ]
+  );
+  // store newEndPos
+  const newEndPos = editor.getSelection()[1] as number[];
+
+  // reset selection to initial position
+  editor.setSelection(
+    [ startPos[0], startPos[1] ],
+    [ endPos[0], endPos[1] ]
+  );
+
+  // if newPosEnd is on following line
+  // => meaning no space or char after selection
+  if (newEndPos[0] !== endPos[0]) {
+    return true;
+  }
+  return false;
+}
 
 function handleBtnAction(
     btn: CustomBtn | CustomPopupBtn , editor: Editor
@@ -9,37 +33,28 @@ function handleBtnAction(
   
   if (btnFn[0] === 'custom') {
     const highlight = editor.getSelectedText();
-    const position = editor.getSelection();
-    const start = position[0] as number[];
-    const end = position[1] as number[];
+    const startPos = editor.getSelection()[0] as number[];
+    const endPos = editor.getSelection()[1] as number[];
+    let criticalCondition = false;
 
-    // check for critical causing syntax highlighting bugs
-    // if selection starts at first char of line
-    // && if no text after selection
-    editor.setSelection(
-      [ end[0], end[1] ],
-      [ end[0], end[1] + 2 ]
-    );
-    const noTextAfterSelection = editor.getSelectedText() === "";
-    const criticalCondition = start[1] === 1 && noTextAfterSelection;
-
-    // reset selection to initial position
-    editor.setSelection(
-      [ start[0], start[1] ],
-      [ end[0], end[1] ]
-    );
-
-    // apply a subterfuge if criticalCondition
+    // check for critical: bug on marked syntax (highlight)
+    // only if selection starts & ends on same line
+    // && if selection starts at first char of line
+    // && if no char or space after selection
+    if ((startPos[0] === endPos[0]) && startPos[1] === 1) {
+      criticalCondition = isCriticalCondition(editor, endPos, startPos);
+    }
+    // if critical: apply a subterfuge to prevent bug
     const startCharPos = criticalCondition
-      ? start[1] - 1
-      : start[1];
+      ? startPos[1] - 1 
+      : startPos[1];
 
     // insert customBlock
-    // [managed in ToastUiEditor component => customHTMLRenderer]
+    // [rendered by ToastUiEditor component => customHTMLRenderer]
     editor.replaceSelection(
       `\n$$${btnFn[1]}\n${highlight}\n$$\n`,
-      [ start[0], startCharPos ],
-      [ end[0], end[1] ]
+      [ startPos[0], startCharPos ],
+      [ endPos[0], endPos[1] ]
     );
   }
   else if (
@@ -50,6 +65,7 @@ function handleBtnAction(
     const highlight = editor.getSelectedText();
     const mdText = {
       orphTag: `<${btnFn[1]}>`,
+      // [rendered by ToastUiEditor component => customHTMLRenderer.htmlInline]
       span: `<span class="${btnFn[1]}">${highlight}</span>`,
       tag: `<${btnFn[1]}>${highlight}</${btnFn[1]}>`
     };
@@ -59,4 +75,5 @@ function handleBtnAction(
     return;
   }
 }
+
 export default handleBtnAction;
