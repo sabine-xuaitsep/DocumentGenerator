@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import Editor, { type HTMLMdNode } from '@/../node_modules/@toast-ui/editor';
+import Editor, { 
+  type CustomHTMLRenderer, 
+  type EditorOptions, 
+  type HTMLMdNode, 
+  type MdNode 
+} from '@/../node_modules/@toast-ui/editor';
+import type { 
+  CustomBlockMdNode, 
+  HTMLToken 
+} from 'node_modules/@toast-ui/editor/types/toastmark';
+import { findAllCustomActions } from '@/components/tuiCustomBtns';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import type { HTMLToken } from 'node_modules/@toast-ui/editor/types/toastmark';
 
 const props = defineProps({
   tuiMdValue: {
@@ -21,8 +30,9 @@ const emit = defineEmits([
 // DOM refs
 const editor = ref();
 
-// ToastUiEditor instance
+// ToastUiEditor instance & options
 let tuiEditor: Editor;
+let tuiOptions: EditorOptions;
 
 // initial toolbar
 // each [] is separated with divider on render
@@ -34,14 +44,7 @@ const toolbarItems = [
 
 
 onMounted(() => {
-  setTuiEditor();
-  if (tuiEditor.getMarkdown() !== "") {
-    emit('update-tui-html-value', tuiEditor.getHTML());
-  }
-});
-
-function setTuiEditor() {
-  tuiEditor = new Editor({
+  tuiOptions = {
     el: editor.value,
     height: undefined,
     hideModeSwitch: true,
@@ -64,18 +67,46 @@ function setTuiEditor() {
         span: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'span'),
         sup: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'sup'),
         u: (node, { entering }) => handleHtmlInlineRenderer(node, entering, 'u')
-      },
-      // customBlock: declared with $$customBlockName & closed with $$
-      divCtr(node) {
-        return [
-          { type: 'openTag', tagName: 'div', outerNewLine: true },
-          { type: 'html', content: node.literal ?? '' },
-          { type: 'closeTag', tagName: 'div', outerNewLine: true }
-        ];
-      },
+      }
     }
+  }
+
+  // customBlock: declared with $$customBlockName & closed with $$
+  // customBtn.action === 'custom:customBlockName'
+  const customBlockNames = findAllCustomActions();
+  // set customRenderer foreach customBlock
+  const customBlocks: CustomHTMLRenderer[] = [];
+  customBlockNames.forEach(customBlockName => {
+    customBlocks.push({ 
+      [customBlockName]: (node: MdNode) => handleCustomBlockRenderer(node) 
+    });
   });
-  emit('tui-editor', tuiEditor);
+  // insert customRenderer in tuiOptions
+  customBlocks.forEach(customBlock => {
+    const renderers = tuiOptions.customHTMLRenderer as CustomHTMLRenderer;
+    Object.assign(renderers, customBlock)
+  });
+
+
+  setTuiEditor();
+  if (tuiEditor.getMarkdown() !== "") {
+    emit('update-tui-html-value', tuiEditor.getHTML());
+  }
+});
+
+
+function handleCustomBlockRenderer(node: MdNode): HTMLToken[] {
+  const nodeCopy = node as CustomBlockMdNode;
+  return [
+    {
+      type: 'openTag',
+      tagName: 'div',
+      outerNewLine: true,
+      attributes: { class: nodeCopy.info }
+    },
+    { type: 'html', content: node.literal ?? '' },
+    { type: 'closeTag', tagName: 'div', outerNewLine: true }
+  ];
 }
 
 function handleHtmlInlineRenderer(
@@ -84,6 +115,11 @@ function handleHtmlInlineRenderer(
   return entering
     ? { type: 'openTag', tagName: tag, attributes: node.attrs }
     : { type: 'closeTag', tagName: tag };
+}
+
+function setTuiEditor() {
+  tuiEditor = new Editor(tuiOptions);
+  emit('tui-editor', tuiEditor);
 }
 </script>
 

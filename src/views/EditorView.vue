@@ -9,7 +9,7 @@ import {
 } from 'vue';
 import ToastUiEditor from '@/components/ToastUiEditor.vue';
 import TuiCustomBtn from '@/components/TuiCustomBtn.vue';
-import myCustomBtns from '@/components/tuiCustomBtns';
+import { myCustomBtns } from '@/components/tuiCustomBtns';
 import type Editor from 'node_modules/@toast-ui/editor/types';
 
 // DOM el & refs

@@ -121,4 +121,26 @@ const myCustomBtns: CustomBtn[] = [
   // TODO???
   // { action: 'erase', faIcon: 'fas fa-eraser', tooltip: 'Erase all' },
 ];
-export default myCustomBtns;
+
+
+function findAllCustomActions () {
+  const customActions: string[] = [];
+  myCustomBtns.forEach(btn => {
+    if (btn.action.match(/custom:/i)) {
+      const customBlock = btn.action.split(':')[1] as string;
+      customActions.push(customBlock);
+    }
+    if (btn.popupBtns) {
+      btn.popupBtns.forEach(popupBtn => {
+        if (popupBtn.action.match(/custom:/i)) {
+          const customBlock = popupBtn.action.split(':')[1] as string;
+          customActions.push(customBlock);
+        }
+      });
+    }
+  });
+  return customActions;
+}
+
+
+export { myCustomBtns, findAllCustomActions };
