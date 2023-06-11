@@ -28,10 +28,9 @@ const myCustomBtns: CustomBtn[] = [
     name: 'fontSize',
     tooltip: 'Font size',
     popupBtns: [
-      { name: 'large', action: 'span:spanfntSz3' },
-      { name: 'medium', action: 'span:spanfntSz2' },
-      { name: 'small', action: 'span:spanfntSz1' },
-      { name: 'tiny', action: 'tag:small' }
+      { name: 'large', action: 'span:large' },
+      { name: 'medium', action: 'span:medium' },
+      { name: 'small', action: 'tag:small' }
     ]
   },
   {
@@ -57,7 +56,7 @@ const myCustomBtns: CustomBtn[] = [
   },
   {
     index: { groupIndex: 1, itemIndex: 1 },
-    action: 'custom:divCtr',
+    action: 'custom:center',
     faIcon: ['fas', 'align-center'],
     name: 'alignCenter',
     tooltip: 'Center text'
@@ -69,12 +68,12 @@ const myCustomBtns: CustomBtn[] = [
     name: 'indent',
     tooltip: 'Indent text',
     popupBtns: [
-      { name: 'indent 1', action: 'custom:divIndent1' },
-      { name: 'indent 2', action: 'custom:divIndent2' },
-      { name: 'indent 3', action: 'custom:divIndent3' },
-      { name: 'indent 4', action: 'custom:divIndent4' },
-      { name: 'indent 5', action: 'custom:divIndent5' },
-      { name: 'indent 6', action: 'custom:divIndent6' }
+      { name: 'indent 1', action: 'custom:indent1' },
+      { name: 'indent 2', action: 'custom:indent2' },
+      { name: 'indent 3', action: 'custom:indent3' },
+      { name: 'indent 4', action: 'custom:indent4' },
+      { name: 'indent 5', action: 'custom:indent5' },
+      { name: 'indent 6', action: 'custom:indent6' }
     ],
   },
   {
@@ -82,25 +81,12 @@ const myCustomBtns: CustomBtn[] = [
     action: 'popup',
     faIcon: ['far', 'square'],
     name: 'bordered',
-    tooltip: 'Add border',
+    tooltip: 'Add box',
     popupBtns: [
-      { name: 'box', action: 'custom:divBox' },
-      { name: 'box+center', action: 'custom:divBoxCtr' },
-      { name: 'color+center', action: 'custom:divClrCtr' },
-      { name: 'box+color+center', action: 'custom:divBoxClrCtr' }
+      { name: 'box+center', action: 'custom:boxCenter' },
+      { name: 'color+center', action: 'custom:colorCenter' },
+      { name: 'box+color+center', action: 'custom:boxColorCenter' }
     ],
-  },
-  {
-    index: { groupIndex: 1, itemIndex: 4 },
-    action: 'popup',
-    faIcon: ['fas', 'code'],
-    name: 'htmlTags',
-    tooltip: 'Other',
-    popupBtns: [
-      { name: '<div class="header">', action: 'custom:divHeader' },
-      { name: '<div class="table1">', action: 'custom:divTable1' },
-      { name: '<div class="table2">', action: 'custom:divTable2' },
-    ]
   },
   {
     index: { groupIndex: 1, itemIndex: 5 },
@@ -113,11 +99,23 @@ const myCustomBtns: CustomBtn[] = [
   // !! each item is separated with divider on render
   {
     // index: { groupIndex: 3, itemIndex: 1 },
-    action: 'print',
-    faIcon: ['fas', 'print'],
-    name: 'print',
-    tooltip: 'Print'
+    action: 'popup',
+    faIcon: ['fas', 'fill-drip'],
+    name: 'docStyle',
+    tooltip: 'Doc colors',
+    popupBtns: [
+      { name: 'Neutral style', action: 'doc:neutral' },
+      { name: 'Teal style', action: 'doc:teal' },
+      { name: 'Pink style', action: 'doc:pink' },
+    ]
   },
+  // {
+  //   index: { groupIndex: 3, itemIndex: 2 },
+  //   action: 'print',
+  //   faIcon: ['fas', 'print'],
+  //   name: 'print',
+  //   tooltip: 'Print'
+  // },
   // TODO???
   // { action: 'erase', faIcon: 'fas fa-eraser', tooltip: 'Erase all' },
 ];

@@ -39,7 +39,7 @@ let tuiOptions: EditorOptions;
 const toolbarItems = [
   [ "heading", "bold", "italic" ],
   [ "hr" ],
-  [ "table", "ul", "ol", "task", "link", "image" ]
+  [ "table", "ul", "ol", "link", "image" ]
 ];
 
 
@@ -97,7 +97,7 @@ onMounted(() => {
 
 function handleCustomBlockRenderer(node: MdNode): HTMLToken[] {
   const nodeCopy = node as CustomBlockMdNode;
-  return [
+  const result = [
     {
       type: 'openTag',
       tagName: 'div',
@@ -107,6 +107,12 @@ function handleCustomBlockRenderer(node: MdNode): HTMLToken[] {
     { type: 'html', content: node.literal ?? '' },
     { type: 'closeTag', tagName: 'div', outerNewLine: true }
   ];
+  if (nodeCopy.info.includes('indent')) {
+    result.splice(1, 0, { type: 'openTag', tagName: 'div', outerNewLine: true });
+    result.splice(3, 0, { type: 'closeTag', tagName: 'div', outerNewLine: true });
+    return result as HTMLToken[];
+  }
+  return result as HTMLToken[];
 }
 
 function handleHtmlInlineRenderer(

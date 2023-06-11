@@ -32,7 +32,7 @@ const isLargeScreen = ref(window.innerWidth >= 992);
 const isFullScreen = ref(false);
 // TODO: if value doesn't finish with '\n\n' => add '\n'
 // => to prevent erratic bug
-const tuiMdValue = ref("# Demo\n\n<u>u</u><sup>sup</sup><mark>mark</mark>\n\n$$divCtr \ncustomDiv \n$$\n\n");
+const tuiMdValue = ref("<span class=\"large\">Large</span> <span class=\"medium\">Medium</span> Normal <small>Small</small>\n[WebDeveloperie](https://www.webdeveloperie.be/)\n<br>\n***\n<br>\n<u>underline</u> 1<sup>st</sup> <mark>marked</mark>\n<br>\n\n$$center\nCentered text\n$$\n\n$$indent1\nindent1\n$$\n\n$$indent2\nindent2\n$$\n\n$$indent3\nindent3\n$$\n\n$$indent4\nindent4\n$$\n\n$$indent5\nindent5\n$$\n\n$$indent6\nindent6\n$$\n\n$$boxCenter\nboxed & centered\n$$\n\n$$colorCenter\nbackground & centered\n$$\n\n$$boxColorCenter\nbox & background & centered\n$$\n\n<br><br>\n\n|  | Passé | Futur |\n| --- | :--- | :--- |\n| JeanQuiRit | Il aurait pu fuire mais il a préféré rire, c'est son choix, pourquoi le blâmer pour cela? | A l'avenir, il sait qu'il reproduira le même comportement, cela lui réussit, c'est certain. |\n| JulesQuiFuit | Il a fuit mais en riant, car il était certain de son choix, son ami allait périr, et lui pas. | Il regrette quand même son choix, son ami lui manquera. Il s'en fera d'autres, il ne s'en fait pas pour ça. |\n<br><br>\n\n|  | Passé | Futur |\n| :---: | :---: | :---: |\n| JeanQuiRit | 1.987563% | 0.7% |\n| JulesQuiFuit | 97.333% | 0.2598135% |\n| JeanQuiPleure | 1.987563% | 0.7% |\n| JulesQuiRage | 97.333% | 0.2598135% |\n\n");
 const tuiHtmlValue = ref("Your text will appear here...");
 
 // computed data
@@ -138,7 +138,24 @@ function openFullscreen() {
   </main>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
+:root {
+  // --neutral-a-color: #308FD9;
+  // --neutral-bg-color: #37CCBD;
+  // --neutral-dark-color: #0E332F;
+  // --neutral-mark-color: #5EFFEF;
+  // --neutral-light-color: #79d5ca31;
+  --teal-a-color: #308FD9;
+  --teal-bg-color: #37CCBD;
+  --teal-dark-color: #0E332F;
+  --teal-mark-color: #5EFFEF;
+  --teal-light-color: #79d5ca31;
+  // --pink-a-color: #308FD9;
+  // --pink-bg-color: #37CCBD;
+  // --pink-dark-color: #0E332F;
+  // --pink-mark-color: #5EFFEF;
+  // --pink-light-color: #79d5ca31;
+}
 #boxContainer {
   display: flex;
   margin: 0 1rem;
@@ -154,6 +171,118 @@ function openFullscreen() {
     overflow-wrap: break-word;
     overflow-y: scroll;
     padding: 1rem;
+
+    .toastui-editor-custom-block-view {
+      padding: 1rem 0;
+    }
+
+    a:not(:visited) {
+      color:#308FD9;
+    }
+
+    hr {
+      border: 1px solid #0E332F;
+    }
+
+    mark {
+      background-color: #5EFFEF;
+    }
+
+    span.large {
+      font-size: 1.7rem;
+    }
+    span.medium {
+      font-size: 1.3rem;
+    }
+
+    u {
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+
+    div.center {
+      text-align: center;
+    }
+
+    div.indent1,
+    div.indent2,
+    div.indent3,
+    div.indent4,
+    div.indent5,
+    div.indent6 {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    div.indent1 > div {
+      grid-column: 2 / 13;
+    }
+    div.indent2 > div {
+      grid-column: 3 / 13;
+    }
+    div.indent3 > div {
+      grid-column: 4 / 13;
+    }
+    div.indent4 > div {
+      grid-column: 5 / 13;
+    }
+    div.indent5 > div {
+      grid-column: 6 / 13;
+    }
+    div.indent6 > div {
+      grid-column: 7 / 13;
+    }
+
+    div.boxCenter {
+      border: 1px solid #0E332F;
+      padding: 1rem;
+      text-align: center;
+    }
+    div.colorCenter {
+      background-color: #37CCBD;
+      padding: 1rem;
+      text-align: center;
+    }
+    div.boxColorCenter {
+      background-color: #37CCBD;
+      border: 2px solid #0E332F;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      line-height: 1.7rem;
+    }
+    thead {
+      background-color: #37CCBD;
+      font-size: 1.1rem;
+      line-height: 2.3rem;
+    }
+    table td {
+      min-width: 10rem;
+    }
+    tbody tr:first-child td {
+      padding-top: 1rem;
+    }
+    tbody td, 
+    thead th {
+      padding: .3em 1em .3em 1em;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #79d5ca31;
+    }
+    .table2 thead {
+      border: 1px solid #111;
+    }
+    .table2 td {
+      border-left: 1px solid #111;
+      border-right: 1px solid #111;
+    }
+    .table2 tr:last-child td {
+      border-bottom: 1px solid #111;
+    }
+
   }
 }
 

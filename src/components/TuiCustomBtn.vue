@@ -113,5 +113,9 @@ function handleEvent() {
   &.lineBreak svg {
     transform: rotate(90deg);
   }
+
+  &.tableStyle svg {
+    color: #BBB;
+  }
 }
 </style>
