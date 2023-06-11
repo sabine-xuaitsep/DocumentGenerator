@@ -31,7 +31,7 @@ function handleBtnAction(
 
     // apply a subterfuge if criticalCondition
     const startCharPos = criticalCondition
-      ? start[1] + 1
+      ? start[1] - 1
       : start[1];
 
     // insert customBlock
@@ -41,14 +41,6 @@ function handleBtnAction(
       [ start[0], startCharPos ],
       [ end[0], end[1] ]
     );
-
-    // apply patch to hide subterfuge
-    if (criticalCondition && highlight !== "") {
-      editor.deleteSelection(
-        [ start[0], start[1] ],
-        [ start[0], start[1] + 1 ]
-      );
-    }
   }
   else if (
       btnFn[0] === 'orphTag'
