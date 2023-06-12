@@ -8,11 +8,21 @@ const props = defineProps<{
   tuiEditor: Editor
 }>();
 
+const emit = defineEmits([
+  'update-doc-color'
+]);
+
 function handleEvent() {
   if (props.customPopupBtn.action.match(/[a-z]+:/i)) {
     handleBtnAction(props.customPopupBtn, props.tuiEditor);
     props.tuiEditor.eventEmitter.emit('closePopup');
-  } else {
+  }
+  else if (props.customPopupBtn.action.match(/doc-/i)) {
+    const btnFn = props.customPopupBtn.action.split('-') as string[];
+    emit('update-doc-color', btnFn[1]);
+    props.tuiEditor.eventEmitter.emit('closePopup');
+  } 
+  else {
     return;
   }
   return false;

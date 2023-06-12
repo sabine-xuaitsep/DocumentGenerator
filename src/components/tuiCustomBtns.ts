@@ -104,9 +104,9 @@ const myCustomBtns: CustomBtn[] = [
     name: 'docStyle',
     tooltip: 'Doc colors',
     popupBtns: [
-      { name: 'Neutral style', action: 'doc:neutral' },
-      { name: 'Teal style', action: 'doc:teal' },
-      { name: 'Pink style', action: 'doc:pink' },
+      { name: 'Neutral style', action: 'doc-neutral' },
+      { name: 'Teal style', action: 'doc-teal' },
+      { name: 'Pink style', action: 'doc-pink' },
     ]
   },
   // {

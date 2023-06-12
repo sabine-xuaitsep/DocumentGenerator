@@ -27,6 +27,12 @@ const boxStyle = reactive({
   width: '0px'
 }) as CSSProperties;
 
+const aColor = ref('#308FD9');
+const bgColor = ref('#37CCBD');
+const darkColor = ref('#0E332F');
+const markColor = ref('#5EFFEF');
+const lightColor = ref('#79d5ca31');
+
 const availableHeight = ref(0);
 const isLargeScreen = ref(window.innerWidth >= 992);
 const isFullScreen = ref(false);
@@ -93,6 +99,30 @@ function openFullscreen() {
   setBoxStyle();
   isFullScreen.value = true;
 }
+
+function updateDocColor(color: string) {
+  if (color === 'neutral') {
+    aColor.value = 'grey';
+    bgColor.value = 'grey';
+    darkColor.value = 'grey';
+    markColor.value = 'grey';
+    lightColor.value = 'grey';
+  }
+  else if (color === 'teal') {
+    aColor.value = '#308FD9';
+    bgColor.value = '#37CCBD';
+    darkColor.value = '#0E332F';
+    markColor.value = '#5EFFEF';
+    lightColor.value = '#79d5ca31';
+  }
+  else if (color === 'pink') {
+    aColor.value = 'pink';
+    bgColor.value = 'pink';
+    darkColor.value = 'pink';
+    markColor.value = 'pink';
+    lightColor.value = 'pink';
+  }
+}
 </script>
 
 <template>
@@ -118,6 +148,7 @@ function openFullscreen() {
         v-for="(btn, i) in myCustomBtns" :key="i"
         :customBtn="btn"
         :tuiEditor="tuiEditor"
+        @update-doc-color="updateDocColor($event)"
       />
       <div
         id="viewerBox"
@@ -139,23 +170,6 @@ function openFullscreen() {
 </template>
 
 <style lang="scss">
-:root {
-  // --neutral-a-color: #308FD9;
-  // --neutral-bg-color: #37CCBD;
-  // --neutral-dark-color: #0E332F;
-  // --neutral-mark-color: #5EFFEF;
-  // --neutral-light-color: #79d5ca31;
-  --teal-a-color: #308FD9;
-  --teal-bg-color: #37CCBD;
-  --teal-dark-color: #0E332F;
-  --teal-mark-color: #5EFFEF;
-  --teal-light-color: #79d5ca31;
-  // --pink-a-color: #308FD9;
-  // --pink-bg-color: #37CCBD;
-  // --pink-dark-color: #0E332F;
-  // --pink-mark-color: #5EFFEF;
-  // --pink-light-color: #79d5ca31;
-}
 #boxContainer {
   display: flex;
   margin: 0 1rem;
@@ -177,15 +191,15 @@ function openFullscreen() {
     }
 
     a:not(:visited) {
-      color:#308FD9;
+      color: v-bind(aColor);
     }
 
     hr {
-      border: 1px solid #0E332F;
+      border: 1px solid v-bind(darkColor);
     }
 
     mark {
-      background-color: #5EFFEF;
+      background-color: v-bind(markColor);
     }
 
     span.large {
@@ -233,18 +247,18 @@ function openFullscreen() {
     }
 
     div.boxCenter {
-      border: 1px solid #0E332F;
+      border: 1px solid v-bind(darkColor);
       padding: 1rem;
       text-align: center;
     }
     div.colorCenter {
-      background-color: #37CCBD;
+      background-color: v-bind(bgColor);
       padding: 1rem;
       text-align: center;
     }
     div.boxColorCenter {
-      background-color: #37CCBD;
-      border: 2px solid #0E332F;
+      background-color: v-bind(bgColor);
+      border: 2px solid v-bind(darkColor);
       padding: 1rem;
       text-align: center;
     }
@@ -255,7 +269,7 @@ function openFullscreen() {
       line-height: 1.7rem;
     }
     thead {
-      background-color: #37CCBD;
+      background-color: v-bind(bgColor);
       font-size: 1.1rem;
       line-height: 2.3rem;
     }
@@ -270,19 +284,18 @@ function openFullscreen() {
       padding: .3em 1em .3em 1em;
     }
     tbody tr:nth-child(even) {
-      background-color: #79d5ca31;
+      background-color: v-bind(lightColor);
     }
-    .table2 thead {
-      border: 1px solid #111;
-    }
-    .table2 td {
-      border-left: 1px solid #111;
-      border-right: 1px solid #111;
-    }
-    .table2 tr:last-child td {
-      border-bottom: 1px solid #111;
-    }
-
+    // .table2 thead {
+    //   border: 1px solid #111;
+    // }
+    // .table2 td {
+    //   border-left: 1px solid #111;
+    //   border-right: 1px solid #111;
+    // }
+    // .table2 tr:last-child td {
+    //   border-bottom: 1px solid #111;
+    // }
   }
 }
 
