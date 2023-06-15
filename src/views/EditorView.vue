@@ -10,6 +10,7 @@ import {
 import ToastUiEditor from '@/components/ToastUiEditor.vue';
 import TuiCustomBtn from '@/components/TuiCustomBtn.vue';
 import { myCustomBtns } from '@/components/tuiCustomBtns';
+import store from '@/services/store';
 import type Editor from 'node_modules/@toast-ui/editor/types';
 
 // DOM el & refs
@@ -57,6 +58,17 @@ const fullScreenInfo = computed(() =>
 const mainContainerPaddingTop = computed(() =>
   isFullScreen.value ? 16 : 0
 );
+
+
+// check if tuiMdValue stored in localStorage
+const mdValue = store.findTuiMdValue();
+if (!mdValue) {
+  // set localStorage if nothing stored
+  store.setTuiMdValue(tuiMdValue.value);
+} else {
+  // assign value if stored in localStorage
+  tuiMdValue.value = mdValue;
+}
 
 onMounted(() => {
   setBoxStyle();
@@ -123,6 +135,12 @@ function updateDocColor(color: string) {
     lightColor.value = 'pink';
   }
 }
+
+function updateTuiMdValue(data: string) {
+  tuiMdValue.value = data;
+  // update value in localStorage
+  store.updateTuiMdValue(data);
+}
 </script>
 
 <template>
@@ -139,7 +157,7 @@ function updateDocColor(color: string) {
         id="tuiEditorBox"
         :style="boxStyle"
         :tui-md-value="tuiMdValue"
-        @update-tui-md-value="tuiMdValue = $event"
+        @update-tui-md-value="updateTuiMdValue($event)"
         @update-tui-html-value="tuiHtmlValue = $event"
         @tui-editor="tuiEditor = $event"
       />
