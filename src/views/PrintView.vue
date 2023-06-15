@@ -5,7 +5,7 @@ import { jsPDF } from 'jspdf';
 import store from '@/services/store';
 
 const printBox = ref();
-const tuiHtmlValue = ref("");
+const tuiHtml = ref("");
 
 const aColor = ref('#308FD9');
 const bgColor = ref('#37CCBD');
@@ -15,7 +15,8 @@ const lightColor = ref('#79d5ca31');
 
 
 onMounted(() => {
-  tuiHtmlValue.value = store.findTuiHtmlValue();
+  const tuiValues = store.findTuiValues();
+  tuiHtml.value = tuiValues?.html;
 })
 
 async function printPDF() {
@@ -71,7 +72,7 @@ async function printPDF() {
       </a>
       <div
         ref="printBox"
-        v-html="tuiHtmlValue"
+        v-html="tuiHtml"
       ></div>
     </div>
   </main>
@@ -200,9 +201,6 @@ main {
       background-color: v-bind(bgColor);
       font-size: 1.1rem;
       line-height: 2.3rem;
-  }
-  table td {
-      // min-width: 10rem;
   }
   tbody tr:first-child td {
       padding-top: 1rem;

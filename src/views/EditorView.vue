@@ -10,7 +10,6 @@ import {
 import ToastUiEditor from '@/components/ToastUiEditor.vue';
 import TuiCustomBtn from '@/components/TuiCustomBtn.vue';
 import { myCustomBtns } from '@/components/tuiCustomBtns';
-import store from '@/services/store';
 import type Editor from 'node_modules/@toast-ui/editor/types';
 
 // DOM el & refs
@@ -37,10 +36,7 @@ const lightColor = ref('#79d5ca31');
 const availableHeight = ref(0);
 const isLargeScreen = ref(window.innerWidth >= 992);
 const isFullScreen = ref(false);
-// TODO: if value doesn't finish with '\n\n' => add '\n'
-// => to prevent erratic bug
-const tuiMdValue = ref("<span class=\"large\">Large</span> <span class=\"medium\">Medium</span> Normal <small>Small</small>\n[WebDeveloperie](https://www.webdeveloperie.be/)\n<br>\n***\n<br>\n<u>underline</u> 1<sup>st</sup> <mark>marked</mark>\n<br>\n\n$$center\nCentered text\n$$\n\n$$indent1\nindent1\n$$\n\n$$indent2\nindent2\n$$\n\n$$indent3\nindent3\n$$\n\n$$indent4\nindent4\n$$\n\n$$indent5\nindent5\n$$\n\n$$indent6\nindent6\n$$\n\n$$boxCenter\nboxed & centered\n$$\n\n$$colorCenter\nbackground & centered\n$$\n\n$$boxColorCenter\nbox & background & centered\n$$\n\n<br><br>\n\n|  | Passé | Futur |\n| --- | :--- | :--- |\n| JeanQuiRit | Il aurait pu fuire mais il a préféré rire, c'est son choix, pourquoi le blâmer pour cela? | A l'avenir, il sait qu'il reproduira le même comportement, cela lui réussit, c'est certain. |\n| JulesQuiFuit | Il a fuit mais en riant, car il était certain de son choix, son ami allait périr, et lui pas. | Il regrette quand même son choix, son ami lui manquera. Il s'en fera d'autres, il ne s'en fait pas pour ça. |\n<br><br>\n\n|  | Passé | Futur |\n| :---: | :---: | :---: |\n| JeanQuiRit | 1.987563% | 0.7% |\n| JulesQuiFuit | 97.333% | 0.2598135% |\n| JeanQuiPleure | 1.987563% | 0.7% |\n| JulesQuiRage | 97.333% | 0.2598135% |\n\n");
-const tuiHtmlValue = ref("Your text will appear here...");
+const tuiHtml = ref("Your text will appear here...");
 
 // computed data
 const boxContainerFlexDirection = computed(() =>
@@ -59,22 +55,6 @@ const mainContainerPaddingTop = computed(() =>
   isFullScreen.value ? 16 : 0
 );
 
-
-// check if htmlValue & tuiMdValue stored in localStorage
-// set localStorage if nothing stored
-// assign value to ref if stored in localStorage
-const htmlValue = store.findTuiHtmlValue();
-const mdValue = store.findTuiMdValue();
-if (!htmlValue) {
-  store.setTuiHtmlValue(tuiHtmlValue.value);
-} else {
-  tuiHtmlValue.value = htmlValue;
-}
-if (!mdValue) {
-  store.setTuiMdValue(tuiMdValue.value);
-} else {
-  tuiMdValue.value = mdValue;
-}
 
 onMounted(() => {
   setBoxStyle();
@@ -141,18 +121,6 @@ function updateDocColor(color: string) {
     lightColor.value = 'pink';
   }
 }
-
-function updateTuiHtmlValue(data: string) {
-  tuiHtmlValue.value = data;
-  // update value in localStorage
-  store.updateTuiHtmlValue(data);
-}
-
-function updateTuiMdValue(data: string) {
-  tuiMdValue.value = data;
-  // update value in localStorage
-  store.updateTuiMdValue(data);
-}
 </script>
 
 <template>
@@ -168,9 +136,7 @@ function updateTuiMdValue(data: string) {
       <ToastUiEditor
         id="tuiEditorBox"
         :style="boxStyle"
-        :tui-md-value="tuiMdValue"
-        @update-tui-md-value="updateTuiMdValue($event)"
-        @update-tui-html-value="updateTuiHtmlValue($event)"
+        @update-tui-html-value="tuiHtml = $event"
         @tui-editor="tuiEditor = $event"
       />
       <TuiCustomBtn
@@ -183,7 +149,7 @@ function updateTuiMdValue(data: string) {
       <div
         id="viewerBox"
         :style="boxStyle"
-        v-html="tuiHtmlValue"
+        v-html="tuiHtml"
       ></div>
     </div>
     <div id="fullScreenCommand" ref="fullScreenCommand">
@@ -302,9 +268,6 @@ function updateTuiMdValue(data: string) {
       background-color: v-bind(bgColor);
       font-size: 1.1rem;
       line-height: 2.3rem;
-    }
-    table td {
-      // min-width: 10rem;
     }
     tbody tr:first-child td {
       padding-top: 1rem;

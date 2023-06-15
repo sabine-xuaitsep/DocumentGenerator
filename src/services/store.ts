@@ -1,37 +1,28 @@
 const store = {
-  setTuiHtmlValue(data: string) {
-    if (!localStorage.tuiHtmlValue) {
-      localStorage.tuiHtml = JSON.stringify({
-        value: data
-      });
+  setTuiMdValue(data: string ) {
+    if (!localStorage.tuiValues) {
+      localStorage.tuiValues = JSON.stringify({ md: data });
     }
   },
-  setTuiMdValue(data: string) {
-    if (!localStorage.tuiMdValue) {
-      localStorage.tuiMd = JSON.stringify({
-        value: data
-      });
+  findTuiValues() {
+    if (localStorage.tuiValues) {
+      return { 
+        md: JSON.parse(localStorage.tuiValues).md,
+        html: JSON.parse(localStorage.tuiValues).html
+      };
     }
   },
-  findTuiHtmlValue() {
-    if (localStorage.tuiHtml) {
-      return JSON.parse(localStorage.tuiHtml).value;
+  updateTuiValues(data: { md?: string, html?: string }) {
+    if (localStorage.tuiValues) {
+      const tuiValues = JSON.parse(localStorage.tuiValues);
+      if (data.md) {
+        tuiValues.md = data.md;
+      }
+      if (data.html) {
+        tuiValues.html = data.html;
+      }
+      localStorage.tuiValues = JSON.stringify(tuiValues);
     }
-  },
-  findTuiMdValue() {
-    if (localStorage.tuiMd) {
-      return JSON.parse(localStorage.tuiMd).value;
-    }
-  },
-  updateTuiHtmlValue(data: string) {
-    localStorage.tuiHtml = JSON.stringify({
-      value: data
-    });
-  },
-  updateTuiMdValue(data: string) {
-    localStorage.tuiMd = JSON.stringify({
-      value: data
-    });
   }
 }
 

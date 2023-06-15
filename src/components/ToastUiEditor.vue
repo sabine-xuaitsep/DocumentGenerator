@@ -11,18 +11,10 @@ import type {
   HTMLToken 
 } from 'node_modules/@toast-ui/editor/types/toastmark';
 import { findAllCustomActions } from '@/components/tuiCustomBtns';
+import store from '@/services/store';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
-const props = defineProps({
-  tuiMdValue: {
-    type: String,
-    required: false,
-    default: '',
-  }
-});
-
 const emit = defineEmits([
-  'update-tui-md-value',
   'update-tui-html-value',
   'tui-editor'
 ]);
@@ -42,22 +34,33 @@ const toolbarItems = [
   [ "table", "ul", "ol", "link", "image" ]
 ];
 
+// initial mdValue
+// TODO: if value doesn't finish with '\n\n' => add '\n'
+// => to prevent erratic bug
+const initialTuiMd = ref("<span class=\"large\">Large</span> <span class=\"medium\">Medium</span> Normal <small>Small</small>\n[WebDeveloperie](https://www.webdeveloperie.be/)\n<br>\n***\n<br>\n<u>underline</u> 1<sup>st</sup> <mark>marked</mark>\n<br>\n\n$$center\nCentered text\n$$\n\n$$indent1\nindent1\n$$\n\n$$indent2\nindent2\n$$\n\n$$indent3\nindent3\n$$\n\n$$indent4\nindent4\n$$\n\n$$indent5\nindent5\n$$\n\n$$indent6\nindent6\n$$\n\n$$boxCenter\nboxed & centered\n$$\n\n$$colorCenter\nbackground & centered\n$$\n\n$$boxColorCenter\nbox & background & centered\n$$\n\n<br><br>\n\n|  | Passé | Futur |\n| --- | :--- | :--- |\n| JeanQuiRit | Il aurait pu fuire mais il a préféré rire, c'est son choix, pourquoi le blâmer pour cela? | A l'avenir, il sait qu'il reproduira le même comportement, cela lui réussit, c'est certain. |\n| JulesQuiFuit | Il a fuit mais en riant, car il était certain de son choix, son ami allait périr, et lui pas. | Il regrette quand même son choix, son ami lui manquera. Il s'en fera d'autres, il ne s'en fait pas pour ça. |\n<br><br>\n\n|  | Passé | Futur |\n| :---: | :---: | :---: |\n| JeanQuiRit | 1.987563% | 0.7% |\n| JulesQuiFuit | 97.333% | 0.2598135% |\n| JeanQuiPleure | 1.987563% | 0.7% |\n| JulesQuiRage | 97.333% | 0.2598135% |\n\n");
+
+
+// set localStorage.tuiValues (if nothing stored)
+store.setTuiMdValue(initialTuiMd.value);
 
 onMounted(() => {
+  // find values stored in localStorage
+  const tuiValues = store.findTuiValues();
+
   tuiOptions = {
     el: editor.value,
     height: undefined,
     hideModeSwitch: true,
     initialEditType: 'markdown',
-    initialValue: props.tuiMdValue,
+    initialValue: tuiValues?.md ?? initialTuiMd.value,
     placeholder: 'Start typing...',
     previewStyle: 'tab',
     toolbarItems: toolbarItems,
     usageStatistics: false,
     events: {
       change: () => {
-        emit('update-tui-md-value', tuiEditor.getMarkdown());
         emit('update-tui-html-value', tuiEditor.getHTML());
+        store.updateTuiValues({ md: tuiEditor.getMarkdown(), html: tuiEditor.getHTML()});
       },
     },
     customHTMLRenderer: {
@@ -91,6 +94,7 @@ onMounted(() => {
   setTuiEditor();
   if (tuiEditor.getMarkdown() !== "") {
     emit('update-tui-html-value', tuiEditor.getHTML());
+    store.updateTuiValues({ html: tuiEditor.getHTML()})
   }
 });
 
