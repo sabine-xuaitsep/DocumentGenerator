@@ -10,12 +10,17 @@ const router = createRouter({
       component: EditorView
     },
     {
-      path: '/info',
-      name: 'info',
+      path: '/print',
+      name: 'print',
       // route level code-splitting
       // this generates a separate chunk (Info.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/InfoView.vue')
+      component: () => import('@/views/PrintView.vue')
+    },
+    {
+      path: '/info',
+      name: 'info',
+      component: () => import('@/views/InfoView.vue')
     }
   ]
 })

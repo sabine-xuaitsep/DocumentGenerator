@@ -1,0 +1,224 @@
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import store from '@/services/store';
+
+const printBox = ref();
+const tuiHtmlValue = ref("");
+
+const aColor = ref('#308FD9');
+const bgColor = ref('#37CCBD');
+const darkColor = ref('#0E332F');
+const markColor = ref('#5EFFEF');
+const lightColor = ref('#79d5ca31');
+
+
+onMounted(() => {
+  tuiHtmlValue.value = store.findTuiHtmlValue();
+})
+
+async function printPDF() {
+  // default jsPDF('portrait', 'mm', 'a4');
+  const doc = new jsPDF();
+
+  await html2canvas(printBox.value).then(function(canvas) {
+    const margin = 10;
+    const pageHeight = 297;
+    const pageWidth = 210;
+
+    const marginPosBottom = pageHeight - (margin/2);
+    const viewHeight = pageHeight - (margin * 2);
+    const viewWidth = pageWidth - (margin * 2);
+    const imgHeight = (canvas.height * viewWidth) / canvas.width;
+
+    let heightToPrint = imgHeight;
+    let position = margin;
+    heightToPrint -= viewHeight;
+    
+    doc.setDrawColor('#ffffff');
+    doc.setLineWidth(margin);
+    setPrintedImg();
+
+    while (heightToPrint >= 0) {
+      position = heightToPrint - imgHeight + margin;
+      doc.addPage();
+      setPrintedImg();
+      heightToPrint -= viewHeight;
+    }
+
+    function setPrintedImg() {
+      doc.addImage(canvas, 'PNG', margin, position, viewWidth, imgHeight);
+      doc.line(0, margin/2, pageWidth, margin/2);
+      doc.line(0, marginPosBottom, pageWidth, marginPosBottom);
+    }
+  });
+
+  // save doc on user computer
+  doc.save('doc.pdf');
+}
+</script>
+
+<template>
+  <main>
+    <div class="printPreview">
+      <a 
+        class="printBtn"
+        href="#printToPDF" 
+        @click.prevent="printPDF"
+      >
+        Print to PDF
+      </a>
+      <div
+        ref="printBox"
+        v-html="tuiHtmlValue"
+      ></div>
+    </div>
+  </main>
+</template>
+
+<style lang="scss">
+main {
+  margin: 0 1rem;
+}
+
+.printPreview {
+  position: relative;
+  width: 100%;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 3rem;
+
+  a.printBtn {
+    position: absolute;
+    right: 3rem;
+    top: 1rem;
+    display: inline-block;
+    background-color: #37CCBD;
+    border-radius: 7px;
+    box-shadow: 2px 3px 7px #0E332F;
+    padding: 0.5rem 1rem;
+    color: #0E332F;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:not(:visited) {
+      color: #0E332F;
+    }
+
+    &:hover {
+      background-color: #0E332F;
+      box-shadow: 2px 3px 7px #37CCBD;
+      color: #fefefe;
+    }
+  }
+
+  .toastui-editor-custom-block-view {
+    padding: 1rem 0 !important;
+  }
+
+  a:not(:visited) {
+      color: v-bind(aColor);
+  }
+
+  hr {
+      border: 1px solid v-bind(darkColor);
+  }
+
+  mark {
+      background-color: v-bind(markColor);
+  }
+
+  span.large {
+      font-size: 1.7rem;
+  }
+  span.medium {
+      font-size: 1.3rem;
+  }
+
+  u {
+      text-decoration: none;
+      border-bottom: 1px solid;
+  }
+
+  div.center {
+      text-align: center;
+  }
+
+  div.indent1,
+  div.indent2,
+  div.indent3,
+  div.indent4,
+  div.indent5,
+  div.indent6 {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+  }
+  div.indent1 > div {
+      grid-column: 2 / 13;
+  }
+  div.indent2 > div {
+      grid-column: 3 / 13;
+  }
+  div.indent3 > div {
+      grid-column: 4 / 13;
+  }
+  div.indent4 > div {
+      grid-column: 5 / 13;
+  }
+  div.indent5 > div {
+      grid-column: 6 / 13;
+  }
+  div.indent6 > div {
+      grid-column: 7 / 13;
+  }
+
+  div.boxCenter {
+      border: 1px solid v-bind(darkColor);
+      padding: 1rem;
+      text-align: center;
+  }
+  div.colorCenter {
+      background-color: v-bind(bgColor);
+      padding: 1rem;
+      text-align: center;
+  }
+  div.boxColorCenter {
+      background-color: v-bind(bgColor);
+      border: 2px solid v-bind(darkColor);
+      padding: 1rem;
+      text-align: center;
+  }
+
+  table {
+      border-collapse: collapse;
+      width: 100%;
+      line-height: 1.7rem;
+  }
+  thead {
+      background-color: v-bind(bgColor);
+      font-size: 1.1rem;
+      line-height: 2.3rem;
+  }
+  table td {
+      // min-width: 10rem;
+  }
+  tbody tr:first-child td {
+      padding-top: 1rem;
+  }
+  tbody td, 
+  thead th {
+      padding: .3em 1em .3em 1em;
+  }
+  tbody tr:nth-child(even) {
+      background-color: v-bind(lightColor);
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .printPreview {
+    width: 50%;
+  }
+}
+</style>

@@ -60,13 +60,19 @@ const mainContainerPaddingTop = computed(() =>
 );
 
 
-// check if tuiMdValue stored in localStorage
+// check if htmlValue & tuiMdValue stored in localStorage
+// set localStorage if nothing stored
+// assign value to ref if stored in localStorage
+const htmlValue = store.findTuiHtmlValue();
 const mdValue = store.findTuiMdValue();
+if (!htmlValue) {
+  store.setTuiHtmlValue(tuiHtmlValue.value);
+} else {
+  tuiHtmlValue.value = htmlValue;
+}
 if (!mdValue) {
-  // set localStorage if nothing stored
   store.setTuiMdValue(tuiMdValue.value);
 } else {
-  // assign value if stored in localStorage
   tuiMdValue.value = mdValue;
 }
 
@@ -136,6 +142,12 @@ function updateDocColor(color: string) {
   }
 }
 
+function updateTuiHtmlValue(data: string) {
+  tuiHtmlValue.value = data;
+  // update value in localStorage
+  store.updateTuiHtmlValue(data);
+}
+
 function updateTuiMdValue(data: string) {
   tuiMdValue.value = data;
   // update value in localStorage
@@ -158,7 +170,7 @@ function updateTuiMdValue(data: string) {
         :style="boxStyle"
         :tui-md-value="tuiMdValue"
         @update-tui-md-value="updateTuiMdValue($event)"
-        @update-tui-html-value="tuiHtmlValue = $event"
+        @update-tui-html-value="updateTuiHtmlValue($event)"
         @tui-editor="tuiEditor = $event"
       />
       <TuiCustomBtn
@@ -292,7 +304,7 @@ function updateTuiMdValue(data: string) {
       line-height: 2.3rem;
     }
     table td {
-      min-width: 10rem;
+      // min-width: 10rem;
     }
     tbody tr:first-child td {
       padding-top: 1rem;

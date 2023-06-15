@@ -11,6 +11,11 @@ import { RouterLink } from 'vue-router';
         Editor
       </RouterLink>
       <span class="navSeparator">|</span>
+      <RouterLink to="/print">
+        <font-awesome-icon :icon="['fas', 'print']" />
+        Print
+      </RouterLink>
+      <span class="navSeparator">|</span>
       <RouterLink to="/info">
         <font-awesome-icon :icon="['fas', 'circle-info']" />
         Info
