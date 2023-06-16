@@ -8,24 +8,24 @@ import { RouterLink } from 'vue-router';
     <nav>
       <RouterLink to="/">
         <font-awesome-icon :icon="['fas', 'pencil']" />
-        Editor
+        <span class="menuInfo"> Editor</span>
       </RouterLink>
       <span class="navSeparator">|</span>
       <RouterLink to="/print">
         <font-awesome-icon :icon="['fas', 'print']" />
-        Print
+        <span class="menuInfo"> Print</span>
       </RouterLink>
       <span class="navSeparator">|</span>
       <RouterLink to="/info">
         <font-awesome-icon :icon="['fas', 'circle-info']" />
-        Info
+        <span class="menuInfo"> Info</span>
       </RouterLink>
     </nav>
   </header>
 </template>
 
 <style scoped lang="scss">
-header {
+#appHeader {
   margin: 0 1rem;
   color: #fefefe;
   text-align: center;
@@ -47,8 +47,9 @@ header {
       padding: 1rem;
       text-decoration: none;
 
-      svg {
-        padding-right: .3rem;
+      span.menuInfo {
+        display: none;
+        padding-left: .3rem;
       }
     }
 
@@ -59,6 +60,12 @@ header {
     a:hover {
       color: #fefefe;
     }
+  }
+}
+
+@media screen and (min-width: 480px) {
+  #appHeader nav a span.menuInfo {
+    display: inline;
   }
 }
 </style>

@@ -279,16 +279,6 @@ function updateDocColor(color: string) {
     tbody tr:nth-child(even) {
       background-color: v-bind(lightColor);
     }
-    // .table2 thead {
-    //   border: 1px solid #111;
-    // }
-    // .table2 td {
-    //   border-left: 1px solid #111;
-    //   border-right: 1px solid #111;
-    // }
-    // .table2 tr:last-child td {
-    //   border-bottom: 1px solid #111;
-    // }
   }
 }
 
