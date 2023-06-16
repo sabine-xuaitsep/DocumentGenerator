@@ -26,7 +26,11 @@ const router = createRouter({
       path: '/template',
       name: 'template',
       component: () => import('@/views/TemplateView.vue')
-    }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/'
+    },
   ]
 })
 
