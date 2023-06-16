@@ -28,6 +28,7 @@ import {
     faUnderline
 } from '@fortawesome/free-solid-svg-icons'
 import {
+    faFileLines,
     faSquare
 } from '@fortawesome/free-regular-svg-icons'
 
@@ -38,6 +39,7 @@ library.add(
     faCode,
     faCompress,
     faExpand,
+    faFileLines,
     faFillDrip,
     faHighlighter,
     faIndent,

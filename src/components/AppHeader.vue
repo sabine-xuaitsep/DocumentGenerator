@@ -6,6 +6,11 @@ import { RouterLink } from 'vue-router';
   <header id="appHeader">
     <h1>Document Generator</h1>
     <nav>
+      <RouterLink to="/template">
+        <font-awesome-icon :icon="['far', 'file-lines']" />
+        <span class="menuInfo"> Template</span>
+      </RouterLink>
+      <span class="navSeparator">|</span>
       <RouterLink to="/">
         <font-awesome-icon :icon="['fas', 'pencil']" />
         <span class="menuInfo"> Editor</span>
