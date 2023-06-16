@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="customBox mainInfo mainMargin">
     <h2>Project info</h2>
     <p>
       Basically, you can <RouterLink to="/template">choose a template</RouterLink>, <RouterLink to="/">modify it</RouterLink> or create a document from scratch, and <RouterLink to="/print">create a PDF</RouterLink> using this document generator
@@ -12,14 +12,7 @@
 </template>
 
 <style scoped lang="scss">
-main {
-  display: flex;
-  flex-direction: column;
-  background-color: #fefefe;
-  height: 70vh;
-  margin: 0 1rem;
-  padding: 3rem 1rem;
-
+.mainInfo {
   h2, p {
     padding: .5rem 1rem;
     line-height: 1.5em;;
@@ -32,15 +25,8 @@ main {
 }
 
 @media screen and (min-width: 360px) {
-  main .tuiInfo {
+  .mainInfo .tuiInfo {
     display: block;
-  }
-}
-
-@media screen and (min-width: 480px) {
-  main {
-    justify-content: center;
-    padding: 0 3rem 3rem 3rem;
   }
 }
 </style>

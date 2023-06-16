@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import Btn from '@/components/Btn.vue';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import store from '@/services/store';
@@ -61,15 +62,14 @@ async function printPDF() {
 </script>
 
 <template>
-  <main>
+  <main class="mainMargin">
     <div class="printPreview">
-      <a 
+      <Btn
         class="printBtn"
-        href="#printToPDF" 
+        btnInfo="printToPDF"
+        btnName="Print to PDF"
         @click.prevent="printPDF"
-      >
-        Print to PDF
-      </a>
+      />
       <div
         ref="printBox"
         v-html="tuiHtml"
@@ -79,40 +79,17 @@ async function printPDF() {
 </template>
 
 <style lang="scss">
-main {
-  margin: 0 1rem;
-}
-
 .printPreview {
   position: relative;
   width: 100%;
   background-color: #fefefe;
   margin: auto;
-  padding: 3rem;
+  padding: 3rem 1rem;
 
-  a.printBtn {
+  .printBtn {
     position: absolute;
-    right: 3rem;
+    right: 1rem;
     top: 1rem;
-    display: inline-block;
-    background-color: #37CCBD;
-    border-radius: 7px;
-    box-shadow: 2px 3px 7px #0E332F;
-    padding: 0.5rem 1rem;
-    color: #0E332F;
-    font-size: 1rem;
-    font-weight: 500;
-    text-decoration: none;
-
-    &:not(:visited) {
-      color: #0E332F;
-    }
-
-    &:hover {
-      background-color: #0E332F;
-      box-shadow: 2px 3px 7px #37CCBD;
-      color: #fefefe;
-    }
   }
 
   .toastui-editor-custom-block-view {
@@ -120,31 +97,31 @@ main {
   }
 
   a:not(:visited) {
-      color: v-bind(aColor);
+    color: v-bind(aColor);
   }
 
   hr {
-      border: 1px solid v-bind(darkColor);
+    border: 1px solid v-bind(darkColor);
   }
 
   mark {
-      background-color: v-bind(markColor);
+    background-color: v-bind(markColor);
   }
 
   span.large {
-      font-size: 1.7rem;
+    font-size: 1.7rem;
   }
   span.medium {
-      font-size: 1.3rem;
+    font-size: 1.3rem;
   }
 
   u {
-      text-decoration: none;
-      border-bottom: 1px solid;
+    text-decoration: none;
+    border-bottom: 1px solid;
   }
 
   div.center {
-      text-align: center;
+    text-align: center;
   }
 
   div.indent1,
@@ -153,70 +130,75 @@ main {
   div.indent4,
   div.indent5,
   div.indent6 {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
   }
   div.indent1 > div {
-      grid-column: 2 / 13;
+    grid-column: 2 / 13;
   }
   div.indent2 > div {
-      grid-column: 3 / 13;
+    grid-column: 3 / 13;
   }
   div.indent3 > div {
-      grid-column: 4 / 13;
+    grid-column: 4 / 13;
   }
   div.indent4 > div {
-      grid-column: 5 / 13;
+    grid-column: 5 / 13;
   }
   div.indent5 > div {
-      grid-column: 6 / 13;
+    grid-column: 6 / 13;
   }
   div.indent6 > div {
-      grid-column: 7 / 13;
+    grid-column: 7 / 13;
   }
 
   div.boxCenter {
-      border: 1px solid v-bind(darkColor);
-      padding: 1rem;
-      text-align: center;
+    border: 1px solid v-bind(darkColor);
+    padding: 1rem;
+    text-align: center;
   }
   div.colorCenter {
-      background-color: v-bind(bgColor);
-      padding: 1rem;
-      text-align: center;
+    background-color: v-bind(bgColor);
+    padding: 1rem;
+    text-align: center;
   }
   div.boxColorCenter {
-      background-color: v-bind(bgColor);
-      border: 2px solid v-bind(darkColor);
-      padding: 1rem;
-      text-align: center;
+    background-color: v-bind(bgColor);
+    border: 2px solid v-bind(darkColor);
+    padding: 1rem;
+    text-align: center;
   }
 
   table {
-      border-collapse: collapse;
-      width: 100%;
-      line-height: 1.7rem;
+    border-collapse: collapse;
+    width: 100%;
+    line-height: 1.7rem;
   }
   thead {
-      background-color: v-bind(bgColor);
-      font-size: 1.1rem;
-      line-height: 2.3rem;
+    background-color: v-bind(bgColor);
+    font-size: 1.1rem;
+    line-height: 2.3rem;
   }
   tbody tr:first-child td {
-      padding-top: 1rem;
+    padding-top: 1rem;
   }
   tbody td, 
   thead th {
-      padding: .3em 1em .3em 1em;
+    padding: .3em 1em .3em 1em;
   }
   tbody tr:nth-child(even) {
-      background-color: v-bind(lightColor);
+    background-color: v-bind(lightColor);
   }
 }
 
 @media screen and (min-width: 992px) {
   .printPreview {
-    width: 50%;
+    width: 53.3%;
+    padding: 3rem;
+
+    .printBtn {
+      right: 3rem;
+    }
   }
 }
 </style>

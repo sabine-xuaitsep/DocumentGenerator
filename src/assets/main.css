@@ -10,3 +10,22 @@ body {
   min-height: 100vh;
   font-family: Roboto, sans-serif;
 }
+
+.mainMargin {
+  margin: 0 1rem;
+}
+
+.customBox {
+  display: flex;
+  flex-direction: column;
+  background-color: #fefefe;
+  height: 70vh;
+  padding: 3rem 1rem;
+}
+
+@media screen and (min-width: 480px) {
+  .customBox {
+    justify-content: center;
+    padding: 0 3rem 3rem 3rem;
+  }
+}
