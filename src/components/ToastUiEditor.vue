@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import Editor, { 
   type CustomHTMLRenderer, 
   type EditorOptions, 
@@ -34,33 +34,39 @@ const toolbarItems = [
   [ "table", "ul", "ol", "link", "image" ]
 ];
 
-// initial mdValue
-// TODO: if value doesn't finish with '\n\n' => add '\n'
-// => to prevent erratic bug
-const initialTuiMd = ref("<span class=\"large\">Large</span> <span class=\"medium\">Medium</span> Normal <small>Small</small>\n[WebDeveloperie](https://www.webdeveloperie.be/)\n<br>\n***\n\n$$center\n 1<sup>st</sup> <u>underlined</u> text <mark>marked</mark>\n$$\n\n$$indent1\n<i>begin from indent1<i>\n$$\n\n$$indent6\n<b>to indent6<b>\n$$\n\n$$boxCenter\nboxed & centered\n$$\n\n$$colorCenter\nbackground & centered\n$$\n\n$$boxColorCenter\nbox & background & centered\n$$\n\n<br><br>\n\n|  | Passé | Futur |\n| --- | :--- | :--- |\n| JeanQuiRit | Il aurait pu fuire mais il a préféré rire, c'est son choix, pourquoi le blâmer pour cela? | A l'avenir, il sait qu'il reproduira le même comportement, cela lui réussit, c'est certain. |\n| JulesQuiFuit | Il a fuit mais en riant, car il était certain de son choix, son ami allait périr, et lui pas. | Il regrette quand même son choix, son ami lui manquera. Il s'en fera d'autres, il ne s'en fait pas. |\n\n<br><br>\n\n|  | Passé | Futur |\n| :---: | :---: | :---: |\n| JeanQuiRit | 1.987563% | 0.7% |\n| JulesQuiFuit | 97.333% | 0.2598135% |\n| JeanQuiPleure | 198.7563% | 70% |\n| JulesQuiRage | 9.333% | 25.98135% |\n\n");
+// inject user status & user status mutation
+const activeUser = 
+  inject('activeUser') as 
+  { value: boolean };
+const updateUserActivity = 
+    inject('updateUserActivity') as 
+    (value: boolean) => void;
 
+// bind value stored in localStorage
+const defaultMd = activeUser.value
+  ? store.findTuiValues().user
+  : store.findTuiValues().md;
 
-// set localStorage.tuiValues (if nothing stored)
-store.setTuiMdValue(initialTuiMd.value);
 
 onMounted(() => {
-  // find values stored in localStorage
-  const tuiValues = store.findTuiValues();
-
   tuiOptions = {
     el: editor.value,
     height: undefined,
     hideModeSwitch: true,
     initialEditType: 'markdown',
-    initialValue: tuiValues?.md ?? initialTuiMd.value,
+    initialValue: defaultMd,
     placeholder: 'Start typing...',
     previewStyle: 'tab',
     toolbarItems: toolbarItems,
     usageStatistics: false,
     events: {
       change: () => {
+        if (!activeUser.value) {
+          // update user status
+          updateUserActivity(true);
+        }
         emit('update-tui-html-value', tuiEditor.getHTML());
-        store.updateTuiValues({ md: tuiEditor.getMarkdown(), html: tuiEditor.getHTML()});
+        store.updateTuiValues({ user: tuiEditor.getMarkdown(), html: tuiEditor.getHTML()});
       },
     },
     customHTMLRenderer: {
@@ -97,7 +103,6 @@ onMounted(() => {
     store.updateTuiValues({ html: tuiEditor.getHTML()})
   }
 });
-
 
 function handleCustomBlockRenderer(node: MdNode): HTMLToken[] {
   const nodeCopy = node as CustomBlockMdNode;

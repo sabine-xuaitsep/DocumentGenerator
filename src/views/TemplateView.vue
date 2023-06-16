@@ -1,33 +1,51 @@
 <script setup lang="ts">
+import { inject, nextTick } from 'vue';
 import Btn from '@/components/Btn.vue';
+import { useRouter } from 'vue-router';
+import store from '@/services/store';
+
+// refer to @services/store
+const templates = [
+  'default',
+  'letter',
+  'table',
+];
+
+// import router
+const router = useRouter();
+
+// inject user status mutation
+const updateUserActivity = 
+    inject('updateUserActivity') as 
+    (value: boolean) => void;
+
+
+function setTemplate(name: string) {
+  // update user status
+  updateUserActivity(false);
+  // set template
+  store.setTemplate(name);
+  // go to editor
+  router.push('/');
+}
 </script>
 
 <template>
   <main class="customBox mainMargin templateBox">
     <h2>Pick up your choice</h2>
     <ul>
-      <li>
+      <li v-for="(template, i) in templates" :key="i">
         <Btn
-          btnInfo="letter"
-          btnName="Letter"
-        />
-      </li>
-      <li>
-        <Btn
-          btnInfo="table"
-          btnName="Table"
-        />
-      </li>
-      <li>
-        <Btn
-          btnInfo="unknown"
-          btnName="Unknown"
+          :btnInfo="template"
+          :btnName="`${template.charAt(0).toUpperCase()}${template.slice(1)}`"
+          @click.prevent="setTemplate(template)"
         />
       </li>
       <li>
         <Btn
           btnInfo="yourModel"
           btnName="Your model"
+          @click.prevent="setTemplate('user')"
         />
       </li>
     </ul>

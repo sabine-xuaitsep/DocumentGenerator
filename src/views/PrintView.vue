@@ -16,8 +16,7 @@ const lightColor = ref('#79d5ca31');
 
 
 onMounted(() => {
-  const tuiValues = store.findTuiValues();
-  tuiHtml.value = tuiValues?.html;
+  tuiHtml.value = store.findTuiValues().html;
 })
 
 async function printPDF() {
