@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, nextTick } from 'vue';
+import { inject } from 'vue';
 import Btn from '@/components/Btn.vue';
 import { useRouter } from 'vue-router';
 import store from '@/services/store';
@@ -11,7 +11,7 @@ const templates = [
   'table',
 ];
 
-// import router
+// make router available
 const router = useRouter();
 
 // inject user status mutation

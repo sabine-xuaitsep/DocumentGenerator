@@ -39,8 +39,8 @@ const activeUser =
   inject('activeUser') as 
   { value: boolean };
 const updateUserActivity = 
-    inject('updateUserActivity') as 
-    (value: boolean) => void;
+  inject('updateUserActivity') as 
+  (value: boolean) => void;
 
 // bind value stored in localStorage
 const defaultMd = activeUser.value
