@@ -8,12 +8,6 @@ import store from '@/services/store';
 const printBox = ref();
 const tuiHtml = ref("");
 
-const aColor = ref('#308FD9');
-const bgColor = ref('#37CCBD');
-const darkColor = ref('#0E332F');
-const markColor = ref('#5EFFEF');
-const lightColor = ref('#79d5ca31');
-
 
 onMounted(() => {
   tuiHtml.value = store.findTuiValues().html;
@@ -77,7 +71,7 @@ async function printPDF() {
   </main>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .printPreview {
   position: relative;
   width: 100%;
@@ -89,104 +83,6 @@ async function printPDF() {
     position: absolute;
     right: 1rem;
     top: 1rem;
-  }
-
-  .toastui-editor-custom-block-view {
-    padding: 1rem 0 !important;
-  }
-
-  a:not(:visited) {
-    color: v-bind(aColor);
-  }
-
-  hr {
-    border: 1px solid v-bind(darkColor);
-  }
-
-  mark {
-    background-color: v-bind(markColor);
-  }
-
-  span.large {
-    font-size: 1.7rem;
-  }
-  span.medium {
-    font-size: 1.3rem;
-  }
-
-  u {
-    text-decoration: none;
-    border-bottom: 1px solid;
-  }
-
-  div.center {
-    text-align: center;
-  }
-
-  div.indent1,
-  div.indent2,
-  div.indent3,
-  div.indent4,
-  div.indent5,
-  div.indent6 {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-  }
-  div.indent1 > div {
-    grid-column: 2 / 13;
-  }
-  div.indent2 > div {
-    grid-column: 3 / 13;
-  }
-  div.indent3 > div {
-    grid-column: 4 / 13;
-  }
-  div.indent4 > div {
-    grid-column: 5 / 13;
-  }
-  div.indent5 > div {
-    grid-column: 6 / 13;
-  }
-  div.indent6 > div {
-    grid-column: 7 / 13;
-  }
-
-  div.boxCenter {
-    border: 1px solid v-bind(darkColor);
-    padding: 1rem;
-    text-align: center;
-  }
-  div.colorCenter {
-    background-color: v-bind(bgColor);
-    padding: 1rem;
-    text-align: center;
-  }
-  div.boxColorCenter {
-    background-color: v-bind(bgColor);
-    border: 2px solid v-bind(darkColor);
-    padding: 1rem;
-    text-align: center;
-  }
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    line-height: 1.7rem;
-  }
-  thead {
-    background-color: v-bind(bgColor);
-    font-size: 1.1rem;
-    line-height: 2.3rem;
-  }
-  tbody tr:first-child td {
-    padding-top: 1rem;
-  }
-  tbody td, 
-  thead th {
-    padding: .3em 1em .3em 1em;
-  }
-  tbody tr:nth-child(even) {
-    background-color: v-bind(lightColor);
   }
 }
 

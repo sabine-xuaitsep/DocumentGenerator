@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { inject } from 'vue';
 import handleBtnAction from '@/services/handleBtnAction';
 import type Editor from 'node_modules/@toast-ui/editor/types';
 import type { CustomPopupBtn } from '@/components/tuiCustomBtns';
@@ -8,9 +9,10 @@ const props = defineProps<{
   tuiEditor: Editor
 }>();
 
-const emit = defineEmits([
-  'update-doc-color'
-]);
+// inject doc color mutation
+const updateDocColor = 
+  inject('updateDocColor') as 
+  (value: string) => void;
 
 function handleEvent() {
   if (props.customPopupBtn.action.match(/[a-z]+:/i)) {
@@ -19,7 +21,7 @@ function handleEvent() {
   }
   else if (props.customPopupBtn.action.match(/doc-/i)) {
     const btnFn = props.customPopupBtn.action.split('-') as string[];
-    emit('update-doc-color', btnFn[1]);
+    updateDocColor(btnFn[1]);
     props.tuiEditor.eventEmitter.emit('closePopup');
   } 
   else {

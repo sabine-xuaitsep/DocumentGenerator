@@ -10,10 +10,6 @@ const props = defineProps<{
   tuiEditor: Editor
 }>();
 
-const emit = defineEmits([
-  'update-doc-color'
-]);
-
 // DOM refs
 const customBtnEl = ref();
 const customPopupEl = ref();
@@ -67,10 +63,6 @@ function handleEvent() {
   return false;
 }
 
-function updateDocColor(e: string) {
-  emit('update-doc-color', e);
-}
-
 // props.tuiEditor.addCommand('markdown', 'test', commandTest);
 // function commandTest(e) {
 //   console.log(e);
@@ -99,7 +91,6 @@ function updateDocColor(e: string) {
         v-for="(btn, i) in customBtn.popupBtns" :key="i"
         :customPopupBtn="btn"
         :tuiEditor="tuiEditor"
-        @update-doc-color="updateDocColor($event)"
       />
     </div>
   </div>
