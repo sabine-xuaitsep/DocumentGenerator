@@ -14,7 +14,7 @@ onMounted(() => {
 })
 
 async function printPDF() {
-  // default jsPDF('portrait', 'mm', 'a4');
+  // default: jsPDF('portrait', 'mm', 'a4');
   const doc = new jsPDF();
 
   await html2canvas(printBox.value).then(function(canvas) {

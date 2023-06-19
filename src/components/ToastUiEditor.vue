@@ -66,7 +66,7 @@ onMounted(() => {
           updateUserActivity(true);
         }
         emit('update-tui-html-value', tuiEditor.getHTML());
-        store.updateTuiValues({ user: tuiEditor.getMarkdown(), html: tuiEditor.getHTML()});
+        store.updateTuiValues({ user: tuiEditor.getMarkdown(), html: tuiEditor.getHTML() });
       },
     },
     customHTMLRenderer: {

@@ -61,8 +61,8 @@ onUnmounted(() => {
 
 function calcAvailableHeight() {
   availableHeight.value = isFullScreen.value
-  ? window.innerHeight - fullScreenCommand.value.offsetHeight - mainContainerPaddingTop.value
-  : window.innerHeight - appHeader.offsetHeight - fullScreenCommand.value.offsetHeight;
+    ? window.innerHeight - fullScreenCommand.value.offsetHeight - mainContainerPaddingTop.value
+    : window.innerHeight - appHeader.offsetHeight - fullScreenCommand.value.offsetHeight;
 }
 
 function closeFullscreen() {
@@ -75,7 +75,7 @@ function setBoxStyle() {
   calcAvailableHeight();
   isLargeScreen.value = window.innerWidth >= 992;
 
-  if(isLargeScreen.value) {
+  if (isLargeScreen.value) {
     boxStyle.height = `${availableHeight.value}px`;
     boxStyle.width = `${boxContainer.value.offsetWidth / 2}px`;
   } else {

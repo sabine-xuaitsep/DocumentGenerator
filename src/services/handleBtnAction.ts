@@ -27,7 +27,7 @@ function isCriticalCondition (
 }
 
 function handleBtnAction(
-    btn: CustomBtn | CustomPopupBtn , editor: Editor
+    btn: CustomBtn | CustomPopupBtn, editor: Editor
   ) {
   const btnFn = btn.action.split(':') as string[];
   
