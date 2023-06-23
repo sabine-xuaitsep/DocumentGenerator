@@ -18,7 +18,6 @@
     "@toast-ui/editor": "^3.2.2",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
-    "pinia": "^2.0.36",
     "vue": "^3.3.2",
     "vue-router": "^4.2.0"
   },
