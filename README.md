@@ -44,6 +44,25 @@ Install [Node.js](https://nodejs.org/en/)
 * Get contents of `dist` folder  
 
 
+### Deploy the app
+
+* Copy on your hosting the content of the `dist` directory just created
+* Add an .htaccess file to the root as :
+```
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteBase /
+        RewriteRule ^index\.html$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule . /index.html [L]
+    </IfModule>
+```
+
+
 ## Authors
 
 [sabine-xuaitsep](https://www.webdeveloperie.be/)
